@@ -1,0 +1,60 @@
+package me.superischroma.spectaculation.item;
+
+import lombok.Getter;
+import org.bukkit.ChatColor;
+
+public enum Rarity
+{
+    COMMON(ChatColor.WHITE),
+    UNCOMMON(ChatColor.GREEN),
+    RARE(ChatColor.BLUE),
+    EPIC(ChatColor.DARK_PURPLE),
+    LEGENDARY(ChatColor.GOLD),
+    MYTHIC(ChatColor.LIGHT_PURPLE),
+    SUPREME(ChatColor.DARK_RED),
+    SPECIAL(ChatColor.RED),
+    VERY_SPECIAL(ChatColor.RED),
+    EXCLUSIVE(ChatColor.GRAY);
+
+    @Getter
+    private final ChatColor color;
+
+    Rarity(ChatColor color)
+    {
+        this.color = color;
+    }
+
+    public Rarity upgrade()
+    {
+        return values()[Math.min(this.ordinal() + 1, values().length - 1)];
+    }
+
+    public Rarity downgrade()
+    {
+        if (this.ordinal() - 1 < 0)
+            return this;
+        return values()[this.ordinal() - 1];
+    }
+
+    public String getDisplay()
+    {
+        return "" + color + ChatColor.BOLD + name().replaceAll("_", " ");
+    }
+
+    public String getBoldedColor()
+    {
+        return "" + color + ChatColor.BOLD;
+    }
+
+    public static Rarity getRarity(String string)
+    {
+        try
+        {
+            return Rarity.valueOf(string.toUpperCase());
+        }
+        catch (IllegalArgumentException ex)
+        {
+            return null;
+        }
+    }
+}
