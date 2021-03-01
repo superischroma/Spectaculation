@@ -52,17 +52,17 @@ public class User
     @Getter
     private Region lastRegion;
     @Getter
-    private Map<SMaterial, Integer> quiver;
+    private final Map<SMaterial, Integer> quiver;
     @Getter
-    private List<ActivePotionEffect> effects;
+    private final List<ActivePotionEffect> effects;
     @Getter
     private double miningXP;
     @Getter
     private double combatXP;
     @Getter
     private double foragingXP;
-    private int[] highestSlayers;
-    private int[] slayerXP;
+    private final int[] highestSlayers;
+    private final int[] slayerXP;
     @Getter
     @Setter
     private boolean permanentCoins;
