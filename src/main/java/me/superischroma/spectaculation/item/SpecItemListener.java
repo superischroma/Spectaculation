@@ -2,6 +2,7 @@ package me.superischroma.spectaculation.item;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import me.superischroma.spectaculation.Spectaculation;
+import me.superischroma.spectaculation.collection.ItemCollection;
 import me.superischroma.spectaculation.enchantment.Enchantment;
 import me.superischroma.spectaculation.enchantment.EnchantmentType;
 import me.superischroma.spectaculation.entity.*;
@@ -726,7 +727,7 @@ public class SpecItemListener extends PListener
             throw new NullPointerException("AYOOOO SOMETHING GOT FUCKED UP BRUH");
         if (item.hasMetadata("obtained"))
             Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + ChatColor.YELLOW + " has obtained " + sItem.getFullName() + ChatColor.YELLOW + "!");
-        if (sItem.getOrigin() == ItemOrigin.NATURAL_BLOCK)
+        if (sItem.getOrigin() == ItemOrigin.NATURAL_BLOCK || sItem.getOrigin() == ItemOrigin.MOB)
         {
             sItem.setOrigin(ItemOrigin.UNKNOWN);
             ItemCollection collection = ItemCollection.getByMaterial(sItem.getType(), stack.getDurability());

@@ -1,15 +1,16 @@
 package me.superischroma.spectaculation.entity.den;
 
-import me.superischroma.spectaculation.entity.EntityFunction;
-import me.superischroma.spectaculation.entity.EntityStatistics;
-import me.superischroma.spectaculation.entity.SEntity;
-import me.superischroma.spectaculation.entity.SEntityType;
-import me.superischroma.spectaculation.user.SlayerQuest;
+import me.superischroma.spectaculation.entity.*;
+import me.superischroma.spectaculation.item.SMaterial;
+import me.superischroma.spectaculation.slayer.SlayerQuest;
 import me.superischroma.spectaculation.user.User;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class BaseSpider implements EntityStatistics, EntityFunction
 {
@@ -40,5 +41,12 @@ public abstract class BaseSpider implements EntityStatistics, EntityFunction
             SlayerQuest.playMinibossSpawn(k, player);
             SUtil.delay(() -> new SEntity(k, SEntityType.MUTANT_TARANTULA).setTarget(player), 12);
         }
+    }
+
+    @Override
+    public List<EntityDrop> drops()
+    {
+        return Arrays.asList(new EntityDrop(SMaterial.STRING, EntityDropType.GUARANTEED, 1.0),
+                new EntityDrop(SMaterial.SPIDER_EYE, EntityDropType.OCCASIONAL, 0.5));
     }
 }

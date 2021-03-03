@@ -1,9 +1,8 @@
-package me.superischroma.spectaculation.user;
+package me.superischroma.spectaculation.slayer;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import lombok.Getter;
 import lombok.Setter;
-import me.superischroma.spectaculation.SlayerBossType;
 import me.superischroma.spectaculation.SoundSequenceType;
 import me.superischroma.spectaculation.Spectaculation;
 import me.superischroma.spectaculation.entity.SEntity;
@@ -11,9 +10,7 @@ import me.superischroma.spectaculation.entity.SEntityType;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.*;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;

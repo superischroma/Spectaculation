@@ -106,7 +106,10 @@ public class Region
         double x = location.getX();
         double y = location.getY();
         double z = location.getZ();
-        return x >= (double) bounds.get(0) && x <= (double) bounds.get(1) &&
+        if (firstLocation == null || firstLocation.getWorld() == null)
+            return false;
+        return firstLocation.getWorld().getUID().equals(location.getWorld().getUID()) &&
+                x >= (double) bounds.get(0) && x <= (double) bounds.get(1) &&
                 y >= (double) bounds.get(2) && y <= (double) bounds.get(3) &&
                 z >= (double) bounds.get(4) && z <= (double) bounds.get(5);
     }
@@ -118,7 +121,10 @@ public class Region
         double x = location.getX();
         double y = location.getY();
         double z = location.getZ();
-        return x >= (double) bounds.get(0) && x <= (double) bounds.get(1) &&
+        if (firstLocation == null || firstLocation.getWorld() == null)
+            return false;
+        return firstLocation.getWorld().getUID().equals(location.getWorld().getUID()) &&
+                x >= (double) bounds.get(0) && x <= (double) bounds.get(1) &&
                 y >= (double) bounds.get(2) && y <= (double) bounds.get(3) &&
                 z >= (double) bounds.get(4) && z <= (double) bounds.get(5);
     }

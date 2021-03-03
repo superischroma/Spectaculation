@@ -1,18 +1,16 @@
 package me.superischroma.spectaculation.gui;
 
-import me.superischroma.spectaculation.user.ItemCollection;
+import me.superischroma.spectaculation.collection.ItemCollection;
 import me.superischroma.spectaculation.user.PlayerStatistics;
 import me.superischroma.spectaculation.user.PlayerUtils;
 import me.superischroma.spectaculation.user.User;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SkyBlockMenuGUI extends GUI
 {
@@ -61,13 +59,33 @@ public class SkyBlockMenuGUI extends GUI
                         ChatColor.YELLOW + "Click to view your profile!");
             }
         });
-        AtomicInteger completed = new AtomicInteger();
-        Collection<ItemCollection> collections = ItemCollection.getCollections();
-        for (ItemCollection collection : collections)
+
+        set(new GUIClickableItem()
         {
-            if (user.getCollection(collection) > 0)
-                completed.incrementAndGet();
-        }
+            @Override
+            public void run(InventoryClickEvent e)
+            {
+                GUIType.SKILL_MENU.getGUI().open(player);
+            }
+
+            @Override
+            public int getSlot()
+            {
+                return 19;
+            }
+
+            @Override
+            public ItemStack getItem()
+            {
+                return SUtil.getStack(ChatColor.GREEN + "Your Skills", Material.DIAMOND_SWORD, (short) 0, 1,
+                        ChatColor.GRAY + "View your Skill progression and",
+                        ChatColor.GRAY + "rewards.",
+                        " ",
+                        ChatColor.YELLOW + "Click to view!");
+            }
+        });
+
+        String[] progress = ItemCollection.getProgress(player, null);
         set(new GUIClickableItem()
         {
             @Override
@@ -92,10 +110,37 @@ public class SkyBlockMenuGUI extends GUI
                         ChatColor.GRAY + "way to becoming a master of",
                         ChatColor.GRAY + "SkyBlock!",
                         " ",
-                        SUtil.createProgressText("Collection Unlocked", completed.get(), collections.size()),
-                        SUtil.createLineProgressBar(20, ChatColor.DARK_GREEN, completed.get(), collections.size()),
+                        progress[0],
+                        progress[1],
                         " ",
                         ChatColor.YELLOW + "Click to view!");
+            }
+        });
+        set(new GUIClickableItem()
+        {
+            @Override
+            public void run(InventoryClickEvent e)
+            {
+                player.playSound(player.getLocation(), Sound.CHEST_OPEN, 1f, 0f);
+                player.openInventory(player.getEnderChest());
+            }
+
+            @Override
+            public int getSlot()
+            {
+                return 25;
+            }
+
+            @Override
+            public ItemStack getItem()
+            {
+                return SUtil.getStack(ChatColor.GREEN + "Ender Chest", Material.ENDER_CHEST,
+                        (short) 0, 1,
+                        ChatColor.GRAY + "Store global items that you want",
+                        ChatColor.GRAY + "to access at any time from",
+                        ChatColor.GRAY + "anywhere here.",
+                        " ",
+                        ChatColor.YELLOW + "Click to open!");
             }
         });
         set(new GUIClickableItem()
@@ -121,30 +166,33 @@ public class SkyBlockMenuGUI extends GUI
                         ChatColor.YELLOW + "Click to open!");
             }
         });
-        set(new GUIClickableItem()
+        if (user.hasCollection(ItemCollection.STRING, 3))
         {
-            @Override
-            public void run(InventoryClickEvent e)
+            set(new GUIClickableItem()
             {
-                GUIType.QUIVER.getGUI().open(player);
-            }
+                @Override
+                public void run(InventoryClickEvent e)
+                {
+                    GUIType.QUIVER.getGUI().open(player);
+                }
 
-            @Override
-            public int getSlot()
-            {
-                return 44;
-            }
+                @Override
+                public int getSlot()
+                {
+                    return 44;
+                }
 
-            @Override
-            public ItemStack getItem()
-            {
-                return SUtil.getSkullURLStack(ChatColor.GREEN + "Quiver", "1f8405116c1daa7ce2f012591458d50246d0a467bcb95a5a2c033aefd6008b63", 1,
-                        ChatColor.GRAY + "A masterfully crafted Quiver",
-                        ChatColor.GRAY + "which holds any kind of",
-                        ChatColor.GRAY + "projectile you can think of!",
-                        " ",
-                        ChatColor.YELLOW + "Click to open!");
-            }
-        });
+                @Override
+                public ItemStack getItem()
+                {
+                    return SUtil.getSkullURLStack(ChatColor.GREEN + "Quiver", "1f8405116c1daa7ce2f012591458d50246d0a467bcb95a5a2c033aefd6008b63", 1,
+                            ChatColor.GRAY + "A masterfully crafted Quiver",
+                            ChatColor.GRAY + "which holds any kind of",
+                            ChatColor.GRAY + "projectile you can think of!",
+                            " ",
+                            ChatColor.YELLOW + "Click to open!");
+                }
+            });
+        }
     }
 }

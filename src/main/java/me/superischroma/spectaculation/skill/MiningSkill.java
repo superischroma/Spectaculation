@@ -47,22 +47,20 @@ public class MiningSkill extends Skill
     }
 
     @Override
-    public List<String> getLevelUpInformation(User user, double previousXP)
+    public List<String> getLevelUpInformation(int level, int lastLevel, boolean showOld)
     {
-        int prevLevel = getLevel(previousXP, hasSixtyLevels());
-        int level = getLevel(user.getSkillXP(this), hasSixtyLevels());
-        String dropChance = prevLevel * 4 + "➜" + ChatColor.GREEN + level * 4;
+        String dropChance = (showOld ? ChatColor.DARK_GRAY + "" + lastLevel * 4 + "➜" : "") + ChatColor.GREEN + level * 4;
         if (level > 25)
-            dropChance = (prevLevel - 25) * 4 + "➜" + ChatColor.GREEN + (level - 25) * 4;
-        return Arrays.asList(" Grants " + ChatColor.DARK_GRAY + dropChance + "%" + ChatColor.WHITE + " chance",
-                " to drop " + (level > 25 ? "3" : "2") + "x ores.", ChatColor.DARK_GRAY + "+" +
+            dropChance = (showOld ? ChatColor.DARK_GRAY + "" + (lastLevel - 25) * 4 + "➜" : "") + ChatColor.GREEN + (level - 25) * 4;
+        return Arrays.asList(ChatColor.WHITE + " Grants " + dropChance + "%" + ChatColor.WHITE + " chance",
+                ChatColor.WHITE + " to drop " + (level > 25 ? "3" : "2") + "x ores.", ChatColor.DARK_GRAY + "+" +
                         ChatColor.GREEN + (level >= 15 ? "2" : "1") + " " + ChatColor.GREEN + "❈ Defense");
     }
 
     @Override
     public boolean hasSixtyLevels()
     {
-        return false;
+        return true;
     }
 
     @Override

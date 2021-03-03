@@ -142,6 +142,19 @@ public final class Groups
             RegionType.MUSHROOM_DESERT
     );
 
+    public static final List<Material> FARMING_MATERIALS = Arrays.asList(
+            Material.CROPS,
+            Material.POTATO,
+            Material.CARROT,
+            Material.MELON_BLOCK,
+            Material.PUMPKIN,
+            Material.SUGAR_CANE_BLOCK,
+            Material.CACTUS,
+            Material.BROWN_MUSHROOM,
+            Material.RED_MUSHROOM,
+            Material.COCOA
+    );
+
     public static final List<Material> EXCHANGEABLE_RECIPE_RESULTS = Arrays.asList(Material.WORKBENCH,
             Material.CHEST, Material.WOOD_HOE, Material.WOOD_PICKAXE, Material.WOOD_AXE,
             Material.WOOD_SWORD, Material.WOOD_SPADE, Material.WOOD_PLATE, Material.STICK);

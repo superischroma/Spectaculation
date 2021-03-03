@@ -3,8 +3,12 @@ package me.superischroma.spectaculation.user;
 import com.google.common.util.concurrent.AtomicDouble;
 import lombok.Getter;
 import lombok.Setter;
-import me.superischroma.spectaculation.SlayerBossType;
+import me.superischroma.spectaculation.skill.*;
+import me.superischroma.spectaculation.slayer.SlayerBossType;
 import me.superischroma.spectaculation.Spectaculation;
+import me.superischroma.spectaculation.collection.ItemCollection;
+import me.superischroma.spectaculation.collection.ItemCollectionReward;
+import me.superischroma.spectaculation.collection.ItemCollectionRewards;
 import me.superischroma.spectaculation.config.Config;
 import me.superischroma.spectaculation.entity.SEntity;
 import me.superischroma.spectaculation.item.SItem;
@@ -14,13 +18,11 @@ import me.superischroma.spectaculation.potion.PotionEffect;
 import me.superischroma.spectaculation.potion.PotionEffectType;
 import me.superischroma.spectaculation.region.Region;
 import me.superischroma.spectaculation.region.RegionType;
-import me.superischroma.spectaculation.skill.CombatSkill;
-import me.superischroma.spectaculation.skill.ForagingSkill;
-import me.superischroma.spectaculation.skill.MiningSkill;
-import me.superischroma.spectaculation.skill.Skill;
+import me.superischroma.spectaculation.slayer.SlayerQuest;
 import me.superischroma.spectaculation.util.SUtil;
 import net.minecraft.server.v1_8_R3.EntityHuman;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftHumanEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -35,6 +37,8 @@ import java.util.*;
 
 public class User
 {
+    public static final int ISLAND_SIZE = 125;
+
     private static final Map<UUID, User> USER_CACHE = new HashMap<>();
     private static final Spectaculation plugin = Spectaculation.getPlugin();
     private static final File USER_FOLDER = new File(plugin.getDataFolder(), "./users");
@@ -48,13 +52,17 @@ public class User
     @Getter
     private long bankCoins;
     @Getter
-    private World island;
+    private Double islandX;
+    @Getter
+    private Double islandZ;
     @Getter
     private Region lastRegion;
     @Getter
     private final Map<SMaterial, Integer> quiver;
     @Getter
     private final List<ActivePotionEffect> effects;
+    @Getter
+    private double farmingXP;
     @Getter
     private double miningXP;
     @Getter
@@ -76,10 +84,12 @@ public class User
         this.collections = ItemCollection.getDefaultCollections();
         this.coins = 0;
         this.bankCoins = 0;
-        this.island = null;
+        this.islandX = null;
+        this.islandZ = null;
         this.lastRegion = null;
         this.quiver = new HashMap<>();
         this.effects = new ArrayList<>();
+        this.farmingXP = 0.0;
         this.miningXP = 0.0;
         this.combatXP = 0.0;
         this.foragingXP = 0.0;
@@ -118,7 +128,8 @@ public class User
         }
         this.coins = config.getLong("coins");
         this.bankCoins = config.getLong("bankCoins");
-        this.island = config.getString("island") != null ? Bukkit.getWorld(config.getString("island")) : null;
+        this.islandX = config.contains("island.x") ? config.getDouble("island.x") : null;
+        this.islandZ = config.contains("island.z") ? config.getDouble("island.z") : null;
         this.lastRegion = config.getString("lastRegion") != null ? Region.get(config.getString("lastRegion")) : null;
         if (config.contains("quiver"))
         {
@@ -134,6 +145,7 @@ public class User
                         config.getLong("effects." + key + ".remaining")));
             }
         }
+        this.farmingXP = config.getDouble("xp.farming");
         this.miningXP = config.getDouble("xp.mining");
         this.combatXP = config.getDouble("xp.combat");
         this.foragingXP = config.getDouble("xp.foraging");
@@ -155,7 +167,8 @@ public class User
             config.set("collections." + entry.getKey().getIdentifier(), entry.getValue());
         config.set("coins", coins);
         config.set("bankCoins", bankCoins);
-        config.set("island", island != null ? island.getName() : null);
+        config.set("island.x", islandX);
+        config.set("island.z", islandZ);
         config.set("lastRegion", lastRegion.getName());
         config.set("quiver", null);
         for (Map.Entry<SMaterial, Integer> entry : quiver.entrySet())
@@ -168,6 +181,7 @@ public class User
             config.set("effects." + type.getNamespace() + ".duration", effect.getEffect().getDuration());
             config.set("effects." + type.getNamespace() + ".remaining", effect.getRemaining());
         }
+        config.set("xp.farming", farmingXP);
         config.set("xp.mining", miningXP);
         config.set("xp.combat", combatXP);
         config.set("xp.foraging", foragingXP);
@@ -182,9 +196,10 @@ public class User
         config.save();
     }
 
-    public void setIsland(World world)
+    public void setIslandLocation(double x, double z)
     {
-        this.island = world;
+        this.islandX = x;
+        this.islandZ = z;
     }
 
     public void setLastRegion(Region lastRegion)
@@ -224,9 +239,33 @@ public class User
 
     public void addToCollection(ItemCollection collection, int amount)
     {
-        int i = collections.getOrDefault(collection, 0);
         int prevTier = collection.getTier(getCollection(collection));
+        int i = collections.getOrDefault(collection, 0);
         collections.put(collection, i + amount);
+        updateCollection(collection, prevTier);
+    }
+
+    public void addToCollection(ItemCollection collection)
+    {
+        addToCollection(collection, 1);
+    }
+
+    public void setCollection(ItemCollection collection, int amount)
+    {
+        int prevTier = collection.getTier(getCollection(collection));
+        collections.put(collection, amount);
+        updateCollection(collection, prevTier);
+    }
+
+    public void zeroCollection(ItemCollection collection)
+    {
+        int prevTier = collection.getTier(getCollection(collection));
+        collections.put(collection, 0);
+        updateCollection(collection, prevTier);
+    }
+
+    private void updateCollection(ItemCollection collection, int prevTier)
+    {
         int tier = collection.getTier(getCollection(collection));
         if (prevTier != tier)
         {
@@ -244,11 +283,14 @@ public class User
             if (rewards != null && rewards.size() != 0)
             {
                 builder.append(" \n");
-                builder.append(ChatColor.GREEN).append(ChatColor.BOLD).append("  REWARDS\n");
+                builder.append(ChatColor.GREEN).append(ChatColor.BOLD).append("  REWARD");
+                if (rewards.size() != 1)
+                    builder.append("S");
+                builder.append(ChatColor.RESET);
                 for (ItemCollectionReward reward : rewards)
                 {
                     reward.onAchieve(player);
-                    builder.append("\n   ").append(reward.toString());
+                    builder.append("\n    ").append(reward.toRewardString());
                 }
             }
             builder.append(ChatColor.YELLOW).append(ChatColor.BOLD).append("------------------------------------------");
@@ -256,24 +298,14 @@ public class User
         }
     }
 
-    public void addToCollection(ItemCollection collection)
-    {
-        addToCollection(collection, 1);
-    }
-
-    public void setCollection(ItemCollection collection, int amount)
-    {
-        collections.put(collection, amount);
-    }
-
-    public void zeroCollection(ItemCollection collection)
-    {
-        collections.put(collection, 0);
-    }
-
     public int getCollection(ItemCollection collection)
     {
         return collections.get(collection);
+    }
+
+    public boolean hasCollection(ItemCollection collection, int tier)
+    {
+        return collection.getTier(getCollection(collection)) >= tier;
     }
 
     public void addToQuiver(SMaterial material, int amount)
@@ -325,6 +357,8 @@ public class User
 
     public double getSkillXP(Skill skill)
     {
+        if (skill instanceof FarmingSkill)
+            return farmingXP;
         if (skill instanceof MiningSkill)
             return miningXP;
         if (skill instanceof CombatSkill)
@@ -337,6 +371,11 @@ public class User
     public void setSkillXP(Skill skill, double xp)
     {
         double prev = 0.0;
+        if (skill instanceof FarmingSkill)
+        {
+            prev = this.farmingXP;
+            this.farmingXP = xp;
+        }
         if (skill instanceof MiningSkill)
         {
             prev = this.miningXP;
@@ -686,19 +725,37 @@ public class User
         Player player = Bukkit.getPlayer(uuid);
         if (player == null)
             return false;
-        if (island == null)
-            return false;
-        return island.getUID().equals(player.getWorld().getUID());
+        return isOnIsland(player.getLocation());
     }
 
-    public boolean isOnUserIsland(User user)
+    public boolean isOnIsland(Block block)
+    {
+        return isOnIsland(block.getLocation());
+    }
+
+    public boolean isOnIsland(Location location)
+    {
+        World world = Bukkit.getWorld("islands");
+        if (world == null)
+            return false;
+        double x = location.getX();
+        double z = location.getZ();
+        return world.getUID().equals(location.getWorld().getUID()) &&
+                x >= islandX - ISLAND_SIZE && x <= islandX + ISLAND_SIZE && z >= islandZ - ISLAND_SIZE && z <= islandZ + ISLAND_SIZE;
+    }
+
+    public boolean isOnUserIsland()
     {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null)
             return false;
-        if (user.getIsland() == null)
+        World world = Bukkit.getWorld("islands");
+        if (world == null)
             return false;
-        return user.getIsland().getUID().equals(player.getWorld().getUID());
+        double x = player.getLocation().getX();
+        double z = player.getLocation().getZ();
+        return world.getUID().equals(player.getWorld().getUID()) &&
+                x < islandX - ISLAND_SIZE && x > islandX + ISLAND_SIZE && z < islandZ - ISLAND_SIZE && z > islandZ + ISLAND_SIZE;
     }
 
     public void sendToSpawn()
@@ -706,7 +763,11 @@ public class User
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return;
         if (isOnIsland())
-            player.teleport(new Location(player.getWorld(), 7.5, 100.0, 7.5));
+        {
+            World world = Bukkit.getWorld("islands");
+            player.teleport(world.getHighestBlockAt(SUtil.blackMagic(islandX),
+                    SUtil.blackMagic(islandZ)).getLocation().add(0.5, 1.0, 0.5));
+        }
         else
         {
             if (lastRegion != null)

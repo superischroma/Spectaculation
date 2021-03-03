@@ -7,6 +7,7 @@ import me.superischroma.spectaculation.entity.nms.Dragon;
 import me.superischroma.spectaculation.item.*;
 import me.superischroma.spectaculation.region.Region;
 import me.superischroma.spectaculation.region.RegionType;
+import me.superischroma.spectaculation.skill.FarmingSkill;
 import me.superischroma.spectaculation.skill.ForagingSkill;
 import me.superischroma.spectaculation.skill.MiningSkill;
 import me.superischroma.spectaculation.skill.Skill;
@@ -21,6 +22,8 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
@@ -32,6 +35,7 @@ import java.util.*;
 public class WorldListener extends PListener
 {
     private static final Map<UUID, List<BlockState>> RESTORER = new HashMap<>();
+    private static final List<UUID> ALREADY_TELEPORTING = new ArrayList<>();
 
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent e)
@@ -110,11 +114,14 @@ public class WorldListener extends PListener
                 }
                 if (Groups.FARMING_REGIONS.contains(region.getType()))
                 {
-                    if (block.getType() == Material.SEEDS || block.getType() == Material.WHEAT ||
-                            block.getType() == Material.CROPS || block.getType() == Material.CARROT ||
-                            block.getType() == Material.POTATO)
+                    if (Groups.FARMING_MATERIALS.contains(block.getType()))
                     {
                         allowBreak = true;
+                        int level = Skill.getLevel(user.getSkillXP(FarmingSkill.INSTANCE), FarmingSkill.INSTANCE.hasSixtyLevels());
+                        double d = FarmingSkill.INSTANCE.getDoubleDropChance(level);
+                        if (SUtil.random(0.0, 1.0) < d)
+                            block.getWorld().dropItemNaturally(block.getLocation().clone().add(0.5, 0.5, 0.5), SItem.of(equiv).getStack());
+                        addToRestorer(block, player);
                     }
                 }
                 if (Groups.MINING_REGIONS.contains(region.getType()))
@@ -177,6 +184,8 @@ public class WorldListener extends PListener
                     }
                 }
             }
+            if (user.isOnIsland(block))
+                allowBreak = true;
             if (!allowBreak)
                 e.setCancelled(true);
         }
@@ -221,6 +230,8 @@ public class WorldListener extends PListener
     {
         Material portalType = e.getLocation().getBlock().getType();
         Entity entity = e.getEntity();
+        if (ALREADY_TELEPORTING.contains(entity.getUniqueId()))
+            return;
         if (portalType == Material.PORTAL)
         {
             World hub = Bukkit.getWorld(!plugin.config.getString("hub_world").isEmpty() ? plugin.config.getString("hub_world") : "hub");
@@ -229,13 +240,23 @@ public class WorldListener extends PListener
                 entity.sendMessage(ChatColor.RED + "Could not find a hub world to teleport you to!");
                 return;
             }
+            ALREADY_TELEPORTING.add(entity.getUniqueId());
+            SUtil.delay(() -> ALREADY_TELEPORTING.remove(entity.getUniqueId()), 15);
             entity.sendMessage(ChatColor.GRAY + "Sending you to the hub...");
             entity.teleport(hub.getSpawnLocation());
             return;
         }
         if (!(entity instanceof Player)) return;
+        ALREADY_TELEPORTING.add(entity.getUniqueId());
+        SUtil.delay(() -> ALREADY_TELEPORTING.remove(entity.getUniqueId()), 15);
         entity.sendMessage(ChatColor.GRAY + "Sending you to your island...");
         PlayerUtils.sendToIsland((Player) entity);
+    }
+
+    @EventHandler
+    public void onPortal(PlayerPortalEvent e)
+    {
+        e.setCancelled(true);
     }
 
     @EventHandler

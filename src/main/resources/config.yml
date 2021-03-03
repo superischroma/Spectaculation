@@ -1,2 +1,5 @@
-island_schematic_location: ''
 hub_world: ''
+islands:
+  x: 0
+  z: 0
+  schematic: ''

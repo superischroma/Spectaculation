@@ -1,6 +1,6 @@
 package me.superischroma.spectaculation.gui;
 
-import me.superischroma.spectaculation.SlayerBossType;
+import me.superischroma.spectaculation.slayer.SlayerBossType;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

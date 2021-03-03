@@ -7,7 +7,7 @@ import me.superischroma.spectaculation.item.SBlock;
 import me.superischroma.spectaculation.item.SMaterial;
 import me.superischroma.spectaculation.skill.Skill;
 import me.superischroma.spectaculation.user.PlayerUtils;
-import me.superischroma.spectaculation.user.SlayerQuest;
+import me.superischroma.spectaculation.slayer.SlayerQuest;
 import me.superischroma.spectaculation.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

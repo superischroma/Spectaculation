@@ -20,6 +20,7 @@ public enum GUIType
     TARANTULA_BROODFATHER(TarantulaBroodfatherGUI.class),
     SVEN_PACKMASTER(SvenPackmasterGUI.class),
     COLLECTION_MENU(CollectionMenuGUI.class),
+    SKILL_MENU(SkillMenuGUI.class),
     ;
 
     private final Class<? extends GUI> gui;

@@ -5,6 +5,7 @@ import com.mojang.authlib.properties.Property;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
@@ -565,10 +566,10 @@ public class SUtil
                     .to(pasteLocation)
                     .ignoreAirBlocks(!withAir)
                     .build();
-            Operations.completeLegacy(operation);
+            Operations.complete(operation);
             return true;
         }
-        catch (IOException | MaxChangedBlocksException ex)
+        catch (IOException | WorldEditException ex)
         {
             ex.printStackTrace();
             return false;
@@ -947,6 +948,18 @@ public class SUtil
                 + ChatColor.GOLD + "%" : ChatColor.GREEN + "100.0%");
     }
 
+    public static String createProgressText(String text, double current, double max)
+    {
+        double percent;
+        if (max != 0)
+            percent = (current / max) * 100.0;
+        else
+            percent = 0.0;
+        percent = roundTo(percent, 1);
+        return ChatColor.GRAY + text + ": " + (percent < 100.0 ? ChatColor.YELLOW + "" + SUtil.commaify(percent)
+                + ChatColor.GOLD + "%" : ChatColor.GREEN + "100.0%");
+    }
+
     public static String createLineProgressBar(int length, ChatColor progressColor, int current, int max)
     {
         double percent = Math.min(current, (double) max) / (double) max;
@@ -954,11 +967,39 @@ public class SUtil
         StringBuilder builder = new StringBuilder().append(progressColor);
         for (int i = 0; i < completed; i++)
             builder.append("-");
-        builder.append(ChatColor.GRAY);
+        builder.append(ChatColor.WHITE);
         for (int i = 0; i < length - completed; i++)
             builder.append("-");
         builder.append(" ").append(ChatColor.YELLOW).append(SUtil.commaify(current)).append(ChatColor.GOLD).append("/")
-            .append(ChatColor.YELLOW).append(SUtil.commaify(max));
+                .append(ChatColor.YELLOW).append(SUtil.commaify(max));
         return builder.toString();
+    }
+
+    public static String createLineProgressBar(int length, ChatColor progressColor, double current, double max)
+    {
+        double percent = Math.min(current, max) / max;
+        long completed = Math.round((double) length * percent);
+        StringBuilder builder = new StringBuilder().append(progressColor);
+        for (int i = 0; i < completed; i++)
+            builder.append("-");
+        builder.append(ChatColor.WHITE);
+        for (int i = 0; i < length - completed; i++)
+            builder.append("-");
+        builder.append(" ").append(ChatColor.YELLOW).append(SUtil.commaify(current)).append(ChatColor.GOLD).append("/")
+                .append(ChatColor.YELLOW).append(SUtil.commaify(max));
+        return builder.toString();
+    }
+
+    public static <T> T[] toArray(List<T> list, Class<T> clazz)
+    {
+        T[] array = (T[]) Array.newInstance(clazz, list.size());
+        for (int i = 0; i < list.size(); i++)
+            array[i] = list.get(i);
+        return array;
+    }
+
+    public static int blackMagic(double d)
+    {
+        return ((Double) d).intValue();
     }
 }

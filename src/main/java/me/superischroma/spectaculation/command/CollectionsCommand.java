@@ -1,6 +1,6 @@
 package me.superischroma.spectaculation.command;
 
-import me.superischroma.spectaculation.user.ItemCollection;
+import me.superischroma.spectaculation.collection.ItemCollection;
 import me.superischroma.spectaculation.user.User;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.command.ConsoleCommandSender;

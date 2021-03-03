@@ -1,4 +1,4 @@
-package me.superischroma.spectaculation.user;
+package me.superischroma.spectaculation.collection;
 
 import org.bukkit.entity.Player;
 
@@ -12,6 +12,7 @@ public abstract class ItemCollectionReward
     }
 
     public abstract void onAchieve(Player player);
+    public abstract String toRewardString();
 
     protected enum Type
     {

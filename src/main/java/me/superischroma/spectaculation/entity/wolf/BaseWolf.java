@@ -4,7 +4,7 @@ import me.superischroma.spectaculation.Spectaculation;
 import me.superischroma.spectaculation.entity.EntityFunction;
 import me.superischroma.spectaculation.entity.SEntity;
 import me.superischroma.spectaculation.entity.SEntityType;
-import me.superischroma.spectaculation.user.SlayerQuest;
+import me.superischroma.spectaculation.slayer.SlayerQuest;
 import me.superischroma.spectaculation.user.User;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.GameMode;

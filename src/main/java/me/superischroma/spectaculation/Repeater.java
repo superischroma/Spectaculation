@@ -11,13 +11,12 @@ import me.superischroma.spectaculation.potion.ActivePotionEffect;
 import me.superischroma.spectaculation.region.Region;
 import me.superischroma.spectaculation.region.RegionType;
 import me.superischroma.spectaculation.sidebar.Sidebar;
+import me.superischroma.spectaculation.slayer.SlayerQuest;
 import me.superischroma.spectaculation.user.*;
-import me.superischroma.spectaculation.util.SLog;
 import me.superischroma.spectaculation.util.SUtil;
 import net.minecraft.server.v1_8_R3.EntityHuman;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftHumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
@@ -177,6 +176,10 @@ public class Repeater
                         if (region.getType().getName() != null)
                             location = region.getType().getColor() + region.getType().getName();
                     }
+                    if (user.isOnIsland())
+                        location = ChatColor.GREEN + "Your Island";
+                    if (user.isOnUserIsland())
+                        location = ChatColor.AQUA + "Unknown Island";
                     sidebar.add(ChatColor.GRAY + " ⏣ " + location);
                     sidebar.add(" ");
                     StringBuilder coinsDisplay = new StringBuilder();

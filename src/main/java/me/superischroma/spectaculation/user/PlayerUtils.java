@@ -3,6 +3,7 @@ package me.superischroma.spectaculation.user;
 import com.google.common.util.concurrent.AtomicDouble;
 import me.superischroma.spectaculation.Repeater;
 import me.superischroma.spectaculation.Spectaculation;
+import me.superischroma.spectaculation.config.Config;
 import me.superischroma.spectaculation.enchantment.Enchantment;
 import me.superischroma.spectaculation.enchantment.EnchantmentType;
 import me.superischroma.spectaculation.entity.*;
@@ -15,8 +16,9 @@ import me.superischroma.spectaculation.potion.PotionEffectType;
 import me.superischroma.spectaculation.reforge.Reforge;
 import me.superischroma.spectaculation.skill.CombatSkill;
 import me.superischroma.spectaculation.skill.Skill;
+import me.superischroma.spectaculation.slayer.SlayerQuest;
+import me.superischroma.spectaculation.util.BlankWorldCreator;
 import me.superischroma.spectaculation.util.Groups;
-import me.superischroma.spectaculation.util.IslandWorldCreator;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -28,6 +30,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.util.*;
 
 public final class PlayerUtils
@@ -475,10 +478,39 @@ public final class PlayerUtils
 
     public static void sendToIsland(Player player)
     {
+        World world = Bukkit.getWorld("islands");
+        if (world == null)
+            world = new BlankWorldCreator("islands").createWorld();
         User user = User.getUser(player.getUniqueId());
-        if (user.getIsland() == null)
-            new IslandWorldCreator(user);
-        player.teleport(new Location(user.getIsland(), 7.5, 100.0, 7.5));
+        if (user.getIslandX() == null)
+        {
+            Config config = Spectaculation.getPlugin().config;
+            double xOffset = config.getDouble("islands.x");
+            double zOffset = config.getDouble("islands.z");
+            if (xOffset < -25000000.0 || xOffset > 25000000.0)
+                zOffset += User.ISLAND_SIZE * 2.0;
+            File file = new File(config.getString("islands.schematic"));
+            SUtil.pasteSchematic(file, new Location(world, 7.0 + xOffset, 100.0, 7.0 + zOffset), true);
+            SUtil.setBlocks(new Location(world, 7.0 + xOffset, 104.0, 44.0 + zOffset),
+                    new Location(world, 5.0 + xOffset, 100.0, 44.0 + zOffset), Material.PORTAL, false);
+            user.setIslandLocation(7.5 + xOffset, 7.5 + zOffset);
+            user.save();
+            if (xOffset > 0)
+                xOffset = xOffset * -1.0;
+            else if (xOffset <= 0)
+            {
+                if (xOffset != 0)
+                    xOffset = xOffset * -1.0;
+                xOffset += User.ISLAND_SIZE * 2.0;
+            }
+            config.set("islands.x", xOffset);
+            config.set("islands.z", zOffset);
+            config.save();
+        }
+        // delay is to let the world load
+        World finalWorld = world;
+        SUtil.delay(() -> player.teleport(finalWorld.getHighestBlockAt(SUtil.blackMagic(user.getIslandX()),
+                SUtil.blackMagic(user.getIslandZ())).getLocation().add(0.5, 1.0, 0.5)), 10);
     }
 
     public static PotionEffect getPotionEffect(Player player, org.bukkit.potion.PotionEffectType type)
@@ -553,6 +585,7 @@ public final class PlayerUtils
                     SItem sItem = SItem.find(stack);
                     if (sItem == null)
                         sItem = SItem.of(stack);
+                    sItem.setOrigin(ItemOrigin.MOB);
                     MaterialStatistics s = sItem.getType().getStatistics();
                     String name = sItem.getRarity().getColor() + sItem.getType().getDisplayName(sItem.getVariant());
                     MaterialFunction f = sItem.getType().getFunction();

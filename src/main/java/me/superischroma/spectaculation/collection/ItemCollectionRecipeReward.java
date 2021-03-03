@@ -1,4 +1,4 @@
-package me.superischroma.spectaculation.user;
+package me.superischroma.spectaculation.collection;
 
 import me.superischroma.spectaculation.item.SMaterial;
 import org.bukkit.ChatColor;
@@ -20,7 +20,7 @@ public class ItemCollectionRecipeReward extends ItemCollectionReward
         // TODO
     }
 
-    public String toString()
+    public String toRewardString()
     {
         return ChatColor.GRAY + material.getDisplayName(material.getData()) + ChatColor.GRAY + " Recipe";
     }

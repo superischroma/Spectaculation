@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public abstract class Skill
 
     public static List<Skill> getSkills()
     {
-        return Arrays.asList(MiningSkill.INSTANCE, CombatSkill.INSTANCE, ForagingSkill.INSTANCE);
+        return Arrays.asList(FarmingSkill.INSTANCE, MiningSkill.INSTANCE, CombatSkill.INSTANCE, ForagingSkill.INSTANCE);
     }
 
     public static double getNextXPGoal(double xp, boolean sixty)
@@ -115,7 +116,7 @@ public abstract class Skill
     public abstract String getName();
     public abstract String getAlternativeName();
     public abstract List<String> getDescription();
-    public abstract List<String> getLevelUpInformation(User user, double previousXP);
+    public abstract List<String> getLevelUpInformation(int level, int lastLevel, boolean showOld);
     public abstract boolean hasSixtyLevels();
     public void onSkillUpdate(User user, double previousXP)
     {
@@ -134,16 +135,20 @@ public abstract class Skill
                 builder.append(ChatColor.DARK_GRAY).append(SUtil.toRomanNumeral(prevLevel)).append("➜");
             builder.append(ChatColor.DARK_AQUA).append(SUtil.toRomanNumeral(level)).append("\n");
             builder.append(" \n");
-            builder.append(ChatColor.GREEN).append(ChatColor.BOLD).append("  REWARDS\n");
-            builder.append(ChatColor.YELLOW).append("   ").append(getAlternativeName()).append(" ").append(SUtil.toRomanNumeral(level))
-                .append(ChatColor.WHITE);
-            for (String line : getLevelUpInformation(user, previousXP))
+            builder.append(ChatColor.GREEN).append(ChatColor.BOLD).append("  REWARDS");
+            for (String line : getRewardLore(level, prevLevel, true))
                 builder.append("\n   ").append(line);
-            builder.append("\n   ").append(ChatColor.DARK_GRAY).append("+").append(ChatColor.GOLD).append(SUtil.commaify(getCoinReward(level)))
-                    .append(ChatColor.GRAY).append(" Coins\n");
             builder.append(ChatColor.DARK_AQUA).append(ChatColor.BOLD).append("------------------------------------------");
             user.send(builder.toString());
             user.addCoins(getCoinReward(level));
         }
+    }
+    public List<String> getRewardLore(int level, int prevLevel, boolean showOld)
+    {
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.YELLOW + getAlternativeName() + " " + SUtil.toRomanNumeral(level) + ChatColor.WHITE);
+        lore.addAll(getLevelUpInformation(level, prevLevel, showOld));
+        lore.add(ChatColor.DARK_GRAY + "+" + ChatColor.GOLD + SUtil.commaify(getCoinReward(level)) + ChatColor.GRAY + " Coins");
+        return lore;
     }
 }

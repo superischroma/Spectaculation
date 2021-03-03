@@ -1,8 +1,8 @@
 package me.superischroma.spectaculation.gui;
 
-import me.superischroma.spectaculation.user.ItemCollection;
-import me.superischroma.spectaculation.user.ItemCollectionReward;
-import me.superischroma.spectaculation.user.ItemCollectionRewards;
+import me.superischroma.spectaculation.collection.ItemCollection;
+import me.superischroma.spectaculation.collection.ItemCollectionReward;
+import me.superischroma.spectaculation.collection.ItemCollectionRewards;
 import me.superischroma.spectaculation.user.User;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.ChatColor;
@@ -72,7 +72,7 @@ public class ItemCollectionGUI extends GUI
             {
                 lore.add(ChatColor.GRAY + "Reward" + (rewards.size() != 1 ? "s" : "") + ":");
                 for (ItemCollectionReward reward : rewards)
-                    lore.add(ChatColor.GRAY + " " + reward.toString());
+                    lore.add(ChatColor.GRAY + " " + reward.toRewardString());
                 lore.add(" ");
             }
             lore.add(ChatColor.YELLOW + "Click to view rewards!");

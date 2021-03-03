@@ -47,6 +47,7 @@ import me.superischroma.spectaculation.item.enchanting.EnchantedBook;
 import me.superischroma.spectaculation.item.entity.RevenantHorrorHead;
 import me.superischroma.spectaculation.item.exclusive.TestItem;
 import me.superischroma.spectaculation.item.exclusive.WheatCrystal;
+import me.superischroma.spectaculation.item.farming.*;
 import me.superischroma.spectaculation.item.foraging.*;
 import me.superischroma.spectaculation.item.hoe.vanilla.*;
 import me.superischroma.spectaculation.item.mining.*;
@@ -276,8 +277,8 @@ public enum SMaterial
     PISTON_MOVING_PIECE(Material.PISTON_MOVING_PIECE),
     YELLOW_FLOWER(Material.YELLOW_FLOWER),
     RED_ROSE(Material.RED_ROSE),
-    BROWN_MUSHROOM(Material.BROWN_MUSHROOM),
-    RED_MUSHROOM(Material.RED_MUSHROOM),
+    BROWN_MUSHROOM(Material.BROWN_MUSHROOM, BrownMushroom.class, true),
+    RED_MUSHROOM(Material.RED_MUSHROOM, RedMushroom.class, true),
     GOLD_BLOCK(Material.GOLD_BLOCK),
     IRON_BLOCK(Material.IRON_BLOCK),
     DOUBLE_STEP(Material.DOUBLE_STEP),
@@ -296,7 +297,7 @@ public enum SMaterial
     DIAMOND_ORE(Material.DIAMOND_ORE, DiamondOre.class, true),
     DIAMOND_BLOCK(Material.DIAMOND_BLOCK, DiamondBlock.class, true),
     CRAFTING_TABLE(Material.WORKBENCH),
-    CROPS(Material.CROPS),
+    WHEAT_SEEDS(Material.CROPS, WheatSeeds.class, true),
     SOIL(Material.SOIL),
     FURNACE(Material.FURNACE),
     BURNING_FURNACE(Material.BURNING_FURNACE),
@@ -318,12 +319,12 @@ public enum SMaterial
     SNOW(Material.SNOW),
     ICE(Material.ICE, Ice.class, true),
     SNOW_BLOCK(Material.SNOW_BLOCK),
-    CACTUS(Material.CACTUS),
+    CACTUS(Material.CACTUS, Cactus.class, true),
     CLAY(Material.CLAY),
-    SUGAR_CANE_BLOCK(Material.SUGAR_CANE_BLOCK),
+    SUGAR_CANE_BLOCK(Material.SUGAR_CANE_BLOCK, SugarCane.class, true),
     JUKEBOX(Material.JUKEBOX),
     FENCE(Material.FENCE),
-    PUMPKIN(Material.PUMPKIN),
+    PUMPKIN(Material.PUMPKIN, Pumpkin.class, true),
     NETHERRACK(Material.NETHERRACK, Netherrack.class, true),
     SOUL_SAND(Material.SOUL_SAND),
     GLOWSTONE(Material.GLOWSTONE, Glowstone.class, true),
@@ -340,7 +341,7 @@ public enum SMaterial
     HUGE_MUSHROOM_2(Material.HUGE_MUSHROOM_2),
     IRON_FENCE(Material.IRON_FENCE),
     THIN_GLASS(Material.THIN_GLASS),
-    MELON_BLOCK(Material.MELON_BLOCK),
+    MELON_BLOCK(Material.MELON_BLOCK, Melon.class, true),
     PUMPKIN_STEM(Material.PUMPKIN_STEM),
     MELON_STEM(Material.MELON_STEM),
     VINE(Material.VINE),
@@ -364,7 +365,7 @@ public enum SMaterial
     REDSTONE_LAMP_ON(Material.REDSTONE_LAMP_ON),
     WOOD_DOUBLE_STEP(Material.WOOD_DOUBLE_STEP),
     WOOD_STEP(Material.WOOD_STEP),
-    COCOA(Material.COCOA),
+    COCOA(Material.COCOA, CocoaBeans.class, true),
     SANDSTONE_STAIRS(Material.SANDSTONE_STAIRS),
     EMERALD_ORE(Material.EMERALD_ORE, EmeraldOre.class, true),
     ENDER_CHEST(Material.ENDER_CHEST),
@@ -378,8 +379,8 @@ public enum SMaterial
     BEACON(Material.BEACON),
     COBBLE_WALL(Material.COBBLE_WALL),
     FLOWER_POT(Material.FLOWER_POT),
-    CARROT(Material.CARROT),
-    POTATO(Material.POTATO),
+    CARROT(Material.CARROT, Carrot.class, true),
+    POTATO(Material.POTATO, Potato.class, true),
     WOOD_BUTTON(Material.WOOD_BUTTON),
     SKULL(Material.SKULL),
     ANVIL(Material.ANVIL),

@@ -1,5 +1,9 @@
 package me.superischroma.spectaculation.gui;
 
+import me.superischroma.spectaculation.collection.ItemCollection;
+import me.superischroma.spectaculation.collection.ItemCollectionCategory;
+import me.superischroma.spectaculation.collection.ItemCollectionReward;
+import me.superischroma.spectaculation.collection.ItemCollectionRewards;
 import me.superischroma.spectaculation.user.*;
 import me.superischroma.spectaculation.util.PaginationList;
 import me.superischroma.spectaculation.util.SUtil;
@@ -119,7 +123,7 @@ public class CategoryCollectionGUI extends GUI
                     {
                         lore.add(ChatColor.GRAY + collection.getName() + " " + numeral + " Reward" + (rewards.size() != 1 ? "s" : ""));
                         for (ItemCollectionReward reward : rewards)
-                            lore.add(ChatColor.GRAY + " " + reward.toString());
+                            lore.add(ChatColor.GRAY + " " + reward.toRewardString());
                         lore.add(" ");
                     }
                 }
@@ -139,7 +143,7 @@ public class CategoryCollectionGUI extends GUI
                     @Override
                     public ItemStack getItem()
                     {
-                        return SUtil.getStack(ChatColor.YELLOW + collection.getName() + " " + SUtil.toRomanNumeral(tier),
+                        return SUtil.getStack(ChatColor.YELLOW + collection.getName() + (tier != 0 ? " " + SUtil.toRomanNumeral(tier) : ""),
                                 collection.getMaterial().getCraftMaterial(), collection.getData(), 1,
                                 lore);
                     }

@@ -1,4 +1,4 @@
-package me.superischroma.spectaculation.user;
+package me.superischroma.spectaculation.collection;
 
 public enum ItemCollectionCategory
 {

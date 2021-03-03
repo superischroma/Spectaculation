@@ -1,10 +1,14 @@
-package me.superischroma.spectaculation.user;
+package me.superischroma.spectaculation.collection;
 
 import lombok.Getter;
 import me.superischroma.spectaculation.item.SMaterial;
-import org.bukkit.Material;
+import me.superischroma.spectaculation.user.User;
+import me.superischroma.spectaculation.util.SUtil;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Getter
@@ -33,6 +37,20 @@ public class ItemCollection
             SMaterial.OAK_WOOD,
             (short) 0,
             9);
+
+    public static final ItemCollection STRING = new ItemCollection("String",
+            ItemCollectionCategory.COMBAT,
+            SMaterial.STRING,
+            (short) 0,
+            new ItemCollectionRewards(50),
+            new ItemCollectionRewards(100),
+            new ItemCollectionRewards(250, new ItemCollectionUpgradeReward("Quiver", ChatColor.GREEN)),
+            new ItemCollectionRewards(1000),
+            new ItemCollectionRewards(2500),
+            new ItemCollectionRewards(5000),
+            new ItemCollectionRewards(10000),
+            new ItemCollectionRewards(25000),
+            new ItemCollectionRewards(50000));
 
     private final String name;
     private final String identifier;
@@ -69,6 +87,33 @@ public class ItemCollection
         COLLECTION_MAP.put(identifier, this);
     }
 
+    public static String[] getProgress(Player player, ItemCollectionCategory category)
+    {
+        User user = User.getUser(player.getUniqueId());
+        AtomicInteger found = new AtomicInteger(), completed = new AtomicInteger();
+        Collection<ItemCollection> collections = category != null ? getCategoryCollections(category) : getCollections();
+        for (ItemCollection collection : collections)
+        {
+            if (user.getCollection(collection) > 0)
+                found.incrementAndGet();
+            if (user.getCollection(collection) >= collection.getMaxAmount())
+                completed.incrementAndGet();
+        }
+        String title;
+        String progress;
+        if (collections.size() == found.get())
+        {
+            title = SUtil.createProgressText("Collection Maxed Out", completed.get(), collections.size());
+            progress = SUtil.createLineProgressBar(20, ChatColor.DARK_GREEN, completed.get(), collections.size());
+        }
+        else
+        {
+            title = SUtil.createProgressText("Collection Unlocked", found.get(), collections.size());
+            progress = SUtil.createLineProgressBar(20, ChatColor.DARK_GREEN, found.get(), collections.size());
+        }
+        return new String[]{title, progress};
+    }
+
     public int getMaxAmount()
     {
         if (rewards.size() == 0 || rewards.get(rewards.size() - 1) == null)
@@ -96,9 +141,10 @@ public class ItemCollection
 
     public int getRequirementForTier(int tier)
     {
+        tier -= 1;
         if (tier < 0 || tier > rewards.size() - 1)
             return -1;
-        ItemCollectionRewards reward = rewards.get(tier - 1);
+        ItemCollectionRewards reward = rewards.get(tier);
         if (reward == null)
             return -1;
         return reward.getRequirement();
@@ -106,9 +152,10 @@ public class ItemCollection
 
     public ItemCollectionRewards getRewardsFor(int tier)
     {
-        if (tier < 0 || tier > rewards.size() - 1)
+        tier -= 1;
+        if (tier < 0 || tier > rewards.size())
             return null;
-        return rewards.get(tier - 1);
+        return rewards.get(tier);
     }
 
     public static ItemCollection getByIdentifier(String identifier)
