@@ -9,7 +9,7 @@ import me.superischroma.spectaculation.item.armor.LeatherArmorStatistics;
 public class SuperiorDragonLeggings implements MaterialFunction, LeatherArmorStatistics
 {
     @Override
-    public int getBaseStrength()
+    public double getBaseStrength()
     {
         return 10;
     }
@@ -27,7 +27,7 @@ public class SuperiorDragonLeggings implements MaterialFunction, LeatherArmorSta
     }
 
     @Override
-    public int getBaseIntelligence()
+    public double getBaseIntelligence()
     {
         return 25;
     }
@@ -39,13 +39,13 @@ public class SuperiorDragonLeggings implements MaterialFunction, LeatherArmorSta
     }
 
     @Override
-    public int getBaseHealth()
+    public double getBaseHealth()
     {
         return 130;
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 170;
     }

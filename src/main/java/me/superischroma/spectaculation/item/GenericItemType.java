@@ -8,5 +8,6 @@ public enum GenericItemType
     ARMOR,
     ACCESSORY,
     BLOCK,
-    ITEM
+    ITEM,
+    PET
 }

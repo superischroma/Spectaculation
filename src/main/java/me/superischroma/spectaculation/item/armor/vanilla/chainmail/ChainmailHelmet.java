@@ -28,7 +28,7 @@ public class ChainmailHelmet implements ToolStatistics, MaterialFunction
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 12;
     }

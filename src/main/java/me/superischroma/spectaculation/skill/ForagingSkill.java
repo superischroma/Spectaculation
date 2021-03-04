@@ -41,9 +41,9 @@ public class ForagingSkill extends Skill
         return ((level - 25.0) * 4.0) / 100.0;
     }
 
-    public int getStrength(int level)
+    public double getStrength(int level)
     {
-        return level < 15 ? level : level + (level - 14);
+        return level < 15.0 ? level : level + (level - 14.0);
     }
 
     @Override

@@ -16,15 +16,15 @@ import java.util.UUID;
 public class PlayerStatistics
 {
     private final UUID uuid;
-    private final IntegerPlayerStatistic maxHealth;
-    private final IntegerPlayerStatistic defense;
-    private final IntegerPlayerStatistic strength;
+    private final DoublePlayerStatistic maxHealth;
+    private final DoublePlayerStatistic defense;
+    private final DoublePlayerStatistic strength;
     private final DoublePlayerStatistic speed;
     private final DoublePlayerStatistic critChance;
     private final DoublePlayerStatistic critDamage;
     private final DoublePlayerStatistic magicFind;
-    private final IntegerPlayerStatistic intelligence;
-    private final IntegerPlayerStatistic trueDefense;
+    private final DoublePlayerStatistic intelligence;
+    private final DoublePlayerStatistic trueDefense;
     @Setter
     private double healthRegenerationPercentBonus;
     @Setter
@@ -33,11 +33,11 @@ public class PlayerStatistics
     private ArmorSet armorSet;
     private Map<Integer, BukkitTask> itemTicker;
 
-    public PlayerStatistics(UUID uuid, IntegerPlayerStatistic maxHealth, IntegerPlayerStatistic defense,
-                            IntegerPlayerStatistic strength, DoublePlayerStatistic speed,
+    public PlayerStatistics(UUID uuid, DoublePlayerStatistic maxHealth, DoublePlayerStatistic defense,
+                            DoublePlayerStatistic strength, DoublePlayerStatistic speed,
                             DoublePlayerStatistic critChance, DoublePlayerStatistic critDamage,
                             DoublePlayerStatistic magicFind,
-                            IntegerPlayerStatistic intelligence, IntegerPlayerStatistic trueDefense,
+                            DoublePlayerStatistic intelligence, DoublePlayerStatistic trueDefense,
                             double healthRegenerationPercentBonus,
                             double manaRegenerationPercentBonus, ArmorSet armorSet)
     {
@@ -90,6 +90,7 @@ public class PlayerStatistics
         critChance.zero(slot);
         critDamage.zero(slot);
         magicFind.zero(slot);
+        trueDefense.zero(slot);
         cancelTickingItem(slot);
     }
 
@@ -126,10 +127,10 @@ public class PlayerStatistics
 
     public static PlayerStatistics blank(UUID uuid)
     {
-        return new PlayerStatistics(uuid, new IntegerPlayerStatistic(100), new IntegerPlayerStatistic(),
-                new IntegerPlayerStatistic(), new DoublePlayerStatistic(1.0),
+        return new PlayerStatistics(uuid, new DoublePlayerStatistic(100.0), new DoublePlayerStatistic(),
+                new DoublePlayerStatistic(), new DoublePlayerStatistic(1.0),
                 new DoublePlayerStatistic(0.3), new DoublePlayerStatistic(0.5), new DoublePlayerStatistic(),
-                new IntegerPlayerStatistic(), new IntegerPlayerStatistic(),
+                new DoublePlayerStatistic(), new DoublePlayerStatistic(),
                 0.0, 0.0, null);
     }
 }

@@ -30,7 +30,7 @@ public class LapisArmorChestplate implements LeatherArmorStatistics, MaterialFun
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 40;
     }

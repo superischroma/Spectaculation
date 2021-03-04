@@ -1,6 +1,7 @@
 package me.superischroma.spectaculation.gui;
 
 import me.superischroma.spectaculation.collection.ItemCollection;
+import me.superischroma.spectaculation.item.pet.Pet;
 import me.superischroma.spectaculation.user.PlayerStatistics;
 import me.superischroma.spectaculation.user.PlayerUtils;
 import me.superischroma.spectaculation.user.User;
@@ -143,6 +144,45 @@ public class SkyBlockMenuGUI extends GUI
                         ChatColor.YELLOW + "Click to open!");
             }
         });
+        if (user.getPets().size() > 0)
+        {
+            Pet.PetItem active = user.getActivePet();
+            String name;
+            if (active == null)
+                name = ChatColor.RED + "None";
+            else
+                name = active.getRarity().getColor() + active.getType().getDisplayName(active.getType().getData());
+            set(new GUIClickableItem()
+            {
+                @Override
+                public void run(InventoryClickEvent e)
+                {
+                    GUIType.PETS.getGUI().open(player);
+                }
+
+                @Override
+                public int getSlot()
+                {
+                    return 30;
+                }
+
+                @Override
+                public ItemStack getItem()
+                {
+                    return SUtil.getStack(ChatColor.GREEN + "Pets", Material.BONE, (short) 0, 1,
+                            ChatColor.GRAY + "View and manage all of your",
+                            ChatColor.GRAY + "Pets.",
+                            " ",
+                            ChatColor.GRAY + "Level up your pets faster by",
+                            ChatColor.GRAY + "gaining XP in their favorite",
+                            ChatColor.GRAY + "skill!",
+                            " ",
+                            ChatColor.GRAY + "Selected pet: " + name,
+                            " ",
+                            ChatColor.YELLOW + "Click to view!");
+                }
+            });
+        }
         set(new GUIClickableItem()
         {
             @Override

@@ -10,12 +10,15 @@ import me.superischroma.spectaculation.entity.caverns.CreeperFunction;
 import me.superischroma.spectaculation.event.CreeperIgniteEvent;
 import me.superischroma.spectaculation.item.accessory.AccessoryFunction;
 import me.superischroma.spectaculation.item.bow.BowFunction;
+import me.superischroma.spectaculation.item.pet.Pet;
+import me.superischroma.spectaculation.item.pet.PetAbility;
 import me.superischroma.spectaculation.item.storage.Storage;
 import me.superischroma.spectaculation.listener.PListener;
 import me.superischroma.spectaculation.potion.PotionEffect;
 import me.superischroma.spectaculation.region.Region;
 import me.superischroma.spectaculation.region.RegionType;
 import me.superischroma.spectaculation.user.*;
+import me.superischroma.spectaculation.util.SLog;
 import me.superischroma.spectaculation.util.SUtil;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.*;
@@ -254,15 +257,15 @@ public class SpecItemListener extends PListener
         if (damaged instanceof Player)
         {
             Player damagedPlayer = (Player) damaged;
+            User user = User.getUser(damagedPlayer.getUniqueId());
             PlayerStatistics statistics = PlayerUtils.STATISTICS_CACHE.get(damagedPlayer.getUniqueId());
             if (statistics == null) return;
-            int defense = statistics.getDefense().addAll();
-            int trueDefense = statistics.getTrueDefense().addAll();
+            double defense = statistics.getDefense().addAll();
+            double trueDefense = statistics.getTrueDefense().addAll();
             if (sEntity != null && sEntity.getStatistics().dealsTrueDamage())
-                e.setDamage(e.getDamage() - (e.getDamage() * ((double) trueDefense / (double) (trueDefense + 100))));
+                e.setDamage(e.getDamage() - (e.getDamage() * (trueDefense / (trueDefense + 100))));
             else
-                e.setDamage(e.getDamage() - (e.getDamage() * ((double) defense / (double) (defense + 100))));
-            try { e.setDamage(EntityDamageEvent.DamageModifier.ARMOR, 0.0); } catch (UnsupportedOperationException ignored) {}
+                e.setDamage(e.getDamage() - (e.getDamage() * (defense / (defense + 100))));
             EntityDamageEvent.DamageCause cause = e.getCause();
             if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof Entity)
             {
@@ -281,6 +284,14 @@ public class SpecItemListener extends PListener
                 damager = fb.getEntity();
                 cause = EntityDamageEvent.DamageCause.ENTITY_ATTACK;
             }
+            Pet.PetItem item = user.getActivePet();
+            Pet pet = user.getActivePetClass();
+            if (item != null && pet != null)
+            {
+                for (PetAbility ability : pet.getPetAbilities(item.toItem()))
+                    ability.onHurt(e, damager);
+            }
+            try { e.setDamage(EntityDamageEvent.DamageModifier.ARMOR, 0.0); } catch (UnsupportedOperationException ignored) {}
             if (damagedPlayer.getHealth() - e.getDamage() <= 0.0)
             {
                 e.setCancelled(true);

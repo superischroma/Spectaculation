@@ -15,15 +15,15 @@ public class HeroicReforge implements Reforge
     }
 
     @Override
-    public RarityValue<Integer> getStrength()
+    public RarityValue<Double> getStrength()
     {
-        return new RarityValue<>(15, 20, 25, 32, 40, 50);
+        return new RarityValue<>(15.0, 20.0, 25.0, 32.0, 40.0, 50.0);
     }
 
     @Override
-    public RarityValue<Integer> getIntelligence()
+    public RarityValue<Double> getIntelligence()
     {
-        return new RarityValue<>(40, 50, 65, 80, 100, 125);
+        return new RarityValue<>(40.0, 50.0, 65.0, 80.0, 100.0, 125.0);
     }
 
     @Override

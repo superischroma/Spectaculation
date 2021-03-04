@@ -7,10 +7,7 @@ import me.superischroma.spectaculation.item.SpecItemListener;
 import me.superischroma.spectaculation.item.armor.ArmorSet;
 import me.superischroma.spectaculation.item.armor.TickingSet;
 import me.superischroma.spectaculation.region.Region;
-import me.superischroma.spectaculation.user.IntegerPlayerStatistic;
-import me.superischroma.spectaculation.user.PlayerStatistic;
-import me.superischroma.spectaculation.user.PlayerStatistics;
-import me.superischroma.spectaculation.user.PlayerUtils;
+import me.superischroma.spectaculation.user.*;
 import me.superischroma.spectaculation.util.Groups;
 import me.superischroma.spectaculation.util.SLog;
 import me.superischroma.spectaculation.util.SUtil;
@@ -61,7 +58,7 @@ public class MinerSet implements TickingSet
     public void tick(Player owner, SItem helmet, SItem chestplate, SItem leggings, SItem boots, List<AtomicInteger> counters)
     {
         PlayerStatistics statistics = PlayerUtils.STATISTICS_CACHE.get(owner.getUniqueId());
-        IntegerPlayerStatistic defense = statistics.getDefense();
+        DoublePlayerStatistic defense = statistics.getDefense();
         SpecItemListener.CombatAction action = SpecItemListener.getLastCombatAction(owner);
         counters.get(0).incrementAndGet();
         if ((action == null || (action.getTimeStamp() + 8000 <= System.currentTimeMillis() && helmet != null && chestplate != null && leggings != null && boots != null)) && counters.get(0).get() >= 2)
@@ -73,12 +70,12 @@ public class MinerSet implements TickingSet
         if (region == null) return;
         if (!Groups.DEEP_CAVERNS_REGIONS.contains(region.getType())) return;
         if (helmet != null)
-            defense.add(PlayerStatistic.MINER_BUFF, 45);
+            defense.add(PlayerStatistic.MINER_BUFF, 45.0);
         if (chestplate != null)
-            defense.add(PlayerStatistic.MINER_BUFF, 95);
+            defense.add(PlayerStatistic.MINER_BUFF, 95.0);
         if (leggings != null)
-            defense.add(PlayerStatistic.MINER_BUFF, 70);
+            defense.add(PlayerStatistic.MINER_BUFF, 70.0);
         if (boots != null)
-            defense.add(PlayerStatistic.MINER_BUFF, 45);
+            defense.add(PlayerStatistic.MINER_BUFF, 45.0);
     }
 }

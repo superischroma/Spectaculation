@@ -6,7 +6,7 @@ public interface PlayerBoostStatistics extends MaterialStatistics
     {
         return 0;
     }
-    default int getBaseStrength()
+    default double getBaseStrength()
     {
         return 0;
     }
@@ -22,7 +22,7 @@ public interface PlayerBoostStatistics extends MaterialStatistics
     {
         return 0.0;
     }
-    default int getBaseIntelligence()
+    default double getBaseIntelligence()
     {
         return 0;
     }
@@ -30,11 +30,11 @@ public interface PlayerBoostStatistics extends MaterialStatistics
     {
         return 0.0;
     }
-    default int getBaseHealth()
+    default double getBaseHealth()
     {
         return 0;
     }
-    default int getBaseDefense()
+    default double getBaseDefense()
     {
         return 0;
     }

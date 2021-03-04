@@ -3,6 +3,7 @@ package me.superischroma.spectaculation.skill;
 import me.superischroma.spectaculation.Repeater;
 import me.superischroma.spectaculation.item.ExperienceRewardStatistics;
 import me.superischroma.spectaculation.item.SMaterial;
+import me.superischroma.spectaculation.item.pet.Pet;
 import me.superischroma.spectaculation.user.User;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.Bukkit;
@@ -107,6 +108,20 @@ public abstract class Skill
     public static void reward(Skill rewarded, double rewardXP, Player player)
     {
         User user = User.getUser(player.getUniqueId());
+        Pet pet = user.getActivePetClass();
+        if (pet != null && pet.getSkill() == rewarded)
+        {
+            Pet.PetItem item = user.getActivePet();
+            int prevLevel = Pet.getLevel(item.getXp(), item.getRarity());
+            item.setXp(item.getXp() + rewardXP);
+            int level = Pet.getLevel(item.getXp(), item.getRarity());
+            if (prevLevel != level)
+            {
+                player.playSound(player.getLocation(), Sound.LEVEL_UP, 1f, 2f);
+                player.sendMessage(ChatColor.GREEN + "Your " + item.getRarity().getColor() + item.getType().getDisplayName(item.getType().getData()) +
+                        ChatColor.GREEN + " levelled up to level " + ChatColor.BLUE + level + ChatColor.GREEN + "!");
+            }
+        }
         user.addSkillXP(rewarded, rewardXP);
         player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1f, 2f);
         if (rewardXP > 0.0)

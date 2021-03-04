@@ -15,13 +15,13 @@ public class YoungDragonLeggings implements MaterialFunction, LeatherArmorStatis
     }
 
     @Override
-    public int getBaseHealth()
+    public double getBaseHealth()
     {
         return 110;
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 140;
     }

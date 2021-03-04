@@ -18,7 +18,7 @@ public class AspectOfTheEnd implements ToolStatistics, MaterialFunction, Ability
     }
 
     @Override
-    public int getBaseStrength()
+    public double getBaseStrength()
     {
         return 100;
     }

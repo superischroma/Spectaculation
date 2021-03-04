@@ -15,9 +15,9 @@ public class FierceReforge implements Reforge
     }
 
     @Override
-    public RarityValue<Integer> getStrength()
+    public RarityValue<Double> getStrength()
     {
-        return new RarityValue<>(2, 4, 6, 8, 10, 12);
+        return new RarityValue<>(2.0, 4.0, 6.0, 8.0, 10.0, 12.0);
     }
 
     @Override

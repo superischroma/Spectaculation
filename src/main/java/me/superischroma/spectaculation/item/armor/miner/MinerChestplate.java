@@ -30,7 +30,7 @@ public class MinerChestplate implements LeatherArmorStatistics, MaterialFunction
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 5;
     }

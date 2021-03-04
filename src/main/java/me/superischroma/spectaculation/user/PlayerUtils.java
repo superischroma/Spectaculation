@@ -11,6 +11,7 @@ import me.superischroma.spectaculation.entity.nms.SlayerBoss;
 import me.superischroma.spectaculation.item.*;
 import me.superischroma.spectaculation.item.accessory.AccessoryFunction;
 import me.superischroma.spectaculation.item.armor.ArmorSet;
+import me.superischroma.spectaculation.item.pet.Pet;
 import me.superischroma.spectaculation.potion.ActivePotionEffect;
 import me.superischroma.spectaculation.potion.PotionEffectType;
 import me.superischroma.spectaculation.reforge.Reforge;
@@ -19,6 +20,7 @@ import me.superischroma.spectaculation.skill.Skill;
 import me.superischroma.spectaculation.slayer.SlayerQuest;
 import me.superischroma.spectaculation.util.BlankWorldCreator;
 import me.superischroma.spectaculation.util.Groups;
+import me.superischroma.spectaculation.util.SLog;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -58,6 +60,7 @@ public final class PlayerUtils
 
         updateSetStatistics(player, helmet, chestplate, leggings, boots, statistics);
         updateHandStatistics(hand, statistics);
+        updatePetStatistics(statistics);
         updateInventoryStatistics(player, statistics);
 
         return statistics;
@@ -65,7 +68,7 @@ public final class PlayerUtils
 
     public static PlayerStatistics updateHandStatistics(SItem hand, PlayerStatistics statistics)
     {
-        IntegerPlayerStatistic strength = statistics.getStrength(),
+        DoublePlayerStatistic strength = statistics.getStrength(),
                 intelligence = statistics.getIntelligence();
         DoublePlayerStatistic critChance = statistics.getCritChance(), critDamage = statistics.getCritDamage();
         if (hand != null && hand.getType().getStatistics().getType() != GenericItemType.ARMOR)
@@ -92,7 +95,7 @@ public final class PlayerUtils
 
     public static PlayerStatistics updateArmorStatistics(SItem piece, PlayerStatistics statistics, int slot)
     {
-        IntegerPlayerStatistic health = statistics.getMaxHealth(),
+        DoublePlayerStatistic health = statistics.getMaxHealth(),
                 defense = statistics.getDefense(),
                 strength = statistics.getStrength(),
                 intelligence = statistics.getIntelligence();
@@ -116,7 +119,7 @@ public final class PlayerUtils
                 for (Enchantment enchantment : piece.getEnchantments())
                 {
                     if (enchantment.getType() == EnchantmentType.GROWTH)
-                        health.add(slot, 15 * enchantment.getLevel());
+                        health.add(slot, 15.0 * enchantment.getLevel());
                 }
             }
             TickingMaterial tickingMaterial = piece.getType().getTickingInstance();
@@ -127,9 +130,41 @@ public final class PlayerUtils
         return statistics;
     }
 
+    public static PlayerStatistics updatePetStatistics(PlayerStatistics statistics)
+    {
+        Player player = Bukkit.getPlayer(statistics.getUuid());
+        User user = User.getUser(player.getUniqueId());
+        Pet.PetItem active = user.getActivePet();
+        DoublePlayerStatistic health = statistics.getMaxHealth(),
+                defense = statistics.getDefense(),
+                strength = statistics.getStrength(),
+                intelligence = statistics.getIntelligence();
+        DoublePlayerStatistic speed = statistics.getSpeed(),
+                critChance = statistics.getCritChance(), critDamage = statistics.getCritDamage(),
+                magicFind = statistics.getMagicFind(), trueDefense = statistics.getTrueDefense();
+        if (active != null)
+        {
+            int level = Pet.getLevel(active.getXp(), active.getRarity());
+            Pet pet = (Pet) active.getType().getGenericInstance();
+            health.set(PlayerStatistic.PET, pet.getPerHealth() * level);
+            defense.set(PlayerStatistic.PET, pet.getPerDefense() * level);
+            strength.set(PlayerStatistic.PET, pet.getPerStrength() * level);
+            intelligence.set(PlayerStatistic.PET, pet.getPerIntelligence() * level);
+            speed.set(PlayerStatistic.PET, pet.getPerSpeed() * level);
+            critChance.set(PlayerStatistic.PET, pet.getPerCritChance() * level);
+            critDamage.set(PlayerStatistic.PET, pet.getPerCritDamage() * level);
+            magicFind.set(PlayerStatistic.PET, pet.getPerMagicFind() * level);
+            trueDefense.set(PlayerStatistic.PET, pet.getPerTrueDefense() * level);
+        }
+        else
+            statistics.zeroAll(PlayerStatistic.PET);
+        updateHealth(player, statistics);
+        return statistics;
+    }
+
     public static PlayerStatistics updateSetStatistics(Player player, SItem helmet, SItem chestplate, SItem leggings, SItem boots, PlayerStatistics statistics)
     {
-        IntegerPlayerStatistic health = statistics.getMaxHealth(),
+        DoublePlayerStatistic health = statistics.getMaxHealth(),
                 defense = statistics.getDefense(),
                 strength = statistics.getStrength(),
                 intelligence = statistics.getIntelligence();
@@ -177,7 +212,7 @@ public final class PlayerUtils
 
     public static PlayerStatistics updateInventoryStatistics(Player player, PlayerStatistics statistics)
     {
-        IntegerPlayerStatistic health = statistics.getMaxHealth(),
+        DoublePlayerStatistic health = statistics.getMaxHealth(),
                 defense = statistics.getDefense(),
                 strength = statistics.getStrength(),
                 intelligence = statistics.getIntelligence();
@@ -217,7 +252,7 @@ public final class PlayerUtils
 
     public static PlayerStatistics updatePotionEffects(User user, PlayerStatistics statistics)
     {
-        IntegerPlayerStatistic health = statistics.getMaxHealth(),
+        DoublePlayerStatistic health = statistics.getMaxHealth(),
                 defense = statistics.getDefense(),
                 strength = statistics.getStrength(),
                 intelligence = statistics.getIntelligence();
@@ -251,7 +286,7 @@ public final class PlayerUtils
     public static PlayerStatistics boostPlayer(PlayerStatistics statistics, PlayerBoostStatistics boostStatistics, long ticks)
     {
         if (statistics == null) return null;
-        IntegerPlayerStatistic health = statistics.getMaxHealth(),
+        DoublePlayerStatistic health = statistics.getMaxHealth(),
                 defense = statistics.getDefense(),
                 strength = statistics.getStrength(),
                 intelligence = statistics.getIntelligence();
@@ -633,7 +668,7 @@ public final class PlayerUtils
     public static int getFinalManaCost(Player player, SItem sItem, int cost)
     {
         PlayerStatistics statistics = PlayerUtils.STATISTICS_CACHE.get(player.getUniqueId());
-        int manaPool = 100 + statistics.getIntelligence().addAll();
+        int manaPool = 100 + SUtil.blackMagic(statistics.getIntelligence().addAll());
         int updated = cost;
         ArmorSet set = PlayerUtils.STATISTICS_CACHE.get(player.getUniqueId()).getArmorSet();
         if (set != null)
@@ -667,7 +702,7 @@ public final class PlayerUtils
     {
         if (boostStatistics == null)
             return;
-        IntegerPlayerStatistic health = statistics.getMaxHealth(),
+        DoublePlayerStatistic health = statistics.getMaxHealth(),
                 defense = statistics.getDefense(),
                 strength = statistics.getStrength(),
                 intelligence = statistics.getIntelligence();

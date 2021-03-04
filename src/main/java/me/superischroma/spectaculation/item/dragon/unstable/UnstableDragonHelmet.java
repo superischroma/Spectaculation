@@ -17,19 +17,19 @@ public class UnstableDragonHelmet implements MaterialFunction, SkullStatistics, 
     }
 
     @Override
-    public int getBaseHealth()
+    public double getBaseHealth()
     {
         return 70;
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 110;
     }
 
     @Override
-    public int getBaseIntelligence()
+    public double getBaseIntelligence()
     {
         return 25;
     }

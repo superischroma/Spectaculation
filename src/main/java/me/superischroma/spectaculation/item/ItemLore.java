@@ -5,7 +5,6 @@ import me.superischroma.spectaculation.item.armor.ArmorSet;
 import me.superischroma.spectaculation.item.orb.OrbBuff;
 import me.superischroma.spectaculation.reforge.Reforge;
 import me.superischroma.spectaculation.user.User;
-import me.superischroma.spectaculation.util.SLog;
 import me.superischroma.spectaculation.util.SUtil;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Bukkit;
@@ -54,7 +53,7 @@ public class ItemLore
             else
                 damage = addPossiblePropertyInt("Damage", playerBoostStatistics.getBaseDamage(), "", false, lore);
             boolean strength = addPossiblePropertyInt("Strength", playerBoostStatistics.getBaseStrength(),
-                    reforge.getStrength().getForRarity(parent.getRarity()), "", false, lore);
+                    SUtil.blackMagic(reforge.getStrength().getForRarity(parent.getRarity())), "", false, lore);
             boolean critChance = addPossiblePropertyInt("Crit Chance", (int) (playerBoostStatistics.getBaseCritChance() * 100),
                     (int) (reforge.getCritChance().getForRarity(parent.getRarity()) * 100), "%", false, lore);
             boolean critDamage = addPossiblePropertyInt("Crit Damage", (int) (playerBoostStatistics.getBaseCritDamage() * 100),
@@ -64,7 +63,7 @@ public class ItemLore
             boolean defense = addPossiblePropertyInt("Defense", playerBoostStatistics.getBaseDefense(), "", true, lore);
             boolean speed = addPossiblePropertyInt("Speed", (int) (playerBoostStatistics.getBaseSpeed() * 100), "", true, lore);
             boolean intelligence = addPossiblePropertyInt("Intelligence", playerBoostStatistics.getBaseIntelligence(),
-                    reforge.getIntelligence().getForRarity(parent.getRarity()),"", true, lore);
+                    SUtil.blackMagic(reforge.getIntelligence().getForRarity(parent.getRarity())),"", true, lore);
             boolean magicFind = addPossiblePropertyInt("Magic Find", (int) (playerBoostStatistics.getBaseMagicFind() * 100), "", true, lore);
             if (health || defense || speed || intelligence || magicFind) lore.add("");
         }
@@ -183,7 +182,7 @@ public class ItemLore
         return lore;
     }
 
-    private boolean addPossiblePropertyInt(String name, int i, int r, String succeeding, boolean green, List<String> list)
+    private boolean addPossiblePropertyInt(String name, double i, int r, String succeeding, boolean green, List<String> list)
     {
         i += r;
         if (i == 0) return false;
@@ -200,7 +199,7 @@ public class ItemLore
         return true;
     }
 
-    private boolean addPossiblePropertyInt(String name, int i, String succeeding, boolean green, List<String> list)
+    private boolean addPossiblePropertyInt(String name, double i, String succeeding, boolean green, List<String> list)
     {
         return addPossiblePropertyInt(name, i, 0, succeeding, green, list);
     }

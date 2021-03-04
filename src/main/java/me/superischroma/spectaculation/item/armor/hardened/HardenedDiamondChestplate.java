@@ -29,7 +29,7 @@ public class HardenedDiamondChestplate implements ToolStatistics, MaterialFuncti
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 120;
     }

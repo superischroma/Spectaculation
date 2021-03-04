@@ -9,19 +9,19 @@ import me.superischroma.spectaculation.item.armor.LeatherArmorStatistics;
 public class WiseDragonChestplate implements MaterialFunction, LeatherArmorStatistics
 {
     @Override
-    public int getBaseIntelligence()
+    public double getBaseIntelligence()
     {
         return 75;
     }
 
     @Override
-    public int getBaseHealth()
+    public double getBaseHealth()
     {
         return 120;
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 160;
     }

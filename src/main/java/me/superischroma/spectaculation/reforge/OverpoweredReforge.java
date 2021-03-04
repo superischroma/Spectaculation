@@ -12,9 +12,9 @@ public class OverpoweredReforge implements Reforge
     }
 
     @Override
-    public RarityValue<Integer> getStrength()
+    public RarityValue<Double> getStrength()
     {
-        return RarityValue.singleInteger(1000);
+        return RarityValue.singleDouble(1000.0);
     }
 
     @Override
@@ -30,8 +30,8 @@ public class OverpoweredReforge implements Reforge
     }
 
     @Override
-    public RarityValue<Integer> getIntelligence()
+    public RarityValue<Double> getIntelligence()
     {
-        return RarityValue.singleInteger(500);
+        return RarityValue.singleDouble(500.0);
     }
 }

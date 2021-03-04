@@ -53,6 +53,7 @@ import me.superischroma.spectaculation.item.hoe.vanilla.*;
 import me.superischroma.spectaculation.item.mining.*;
 import me.superischroma.spectaculation.item.oddities.*;
 import me.superischroma.spectaculation.item.orb.*;
+import me.superischroma.spectaculation.item.pet.EndermanPet;
 import me.superischroma.spectaculation.item.pickaxe.vanilla.*;
 import me.superischroma.spectaculation.item.revenant.*;
 import me.superischroma.spectaculation.item.rune.*;
@@ -237,6 +238,8 @@ public enum SMaterial
     BITE_RUNE(Material.SKULL_ITEM, BiteRune.class),
     SPIRIT_RUNE(Material.SKULL_ITEM, SpiritRune.class),
     COUTURE_RUNE(Material.SKULL_ITEM, CoutureRune.class),
+    // Pets
+    ENDERMAN_PET(Material.SKULL_ITEM, EndermanPet.class),
     // Craft Materials
     AIR(Material.AIR),
     STONE(Material.STONE, Stone.class, true),

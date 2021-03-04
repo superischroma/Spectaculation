@@ -70,7 +70,7 @@ public class ManaFluxPowerOrb extends PowerOrb
                 return null;
             }
             @Override
-            public int getBaseStrength()
+            public double getBaseStrength()
             {
                 return 10;
             }

@@ -3,6 +3,7 @@ package me.superischroma.spectaculation.user;
 import com.google.common.util.concurrent.AtomicDouble;
 import lombok.Getter;
 import lombok.Setter;
+import me.superischroma.spectaculation.item.pet.Pet;
 import me.superischroma.spectaculation.skill.*;
 import me.superischroma.spectaculation.slayer.SlayerBossType;
 import me.superischroma.spectaculation.Spectaculation;
@@ -77,6 +78,8 @@ public class User
     @Getter
     @Setter
     private SlayerQuest slayerQuest;
+    @Getter
+    private List<Pet.PetItem> pets;
 
     private User(UUID uuid)
     {
@@ -96,6 +99,7 @@ public class User
         this.highestSlayers = new int[3];
         this.slayerXP = new int[3];
         this.permanentCoins = false;
+        this.pets = new ArrayList<>();
         if (!USER_FOLDER.exists()) USER_FOLDER.mkdirs();
         String path = uuid.toString() + ".yml";
         File configFile = new File(USER_FOLDER, path);
@@ -157,6 +161,10 @@ public class User
         this.slayerXP[2] = config.getInt("xp.slayer.svenPackmaster");
         this.permanentCoins = config.getBoolean("permanentCoins");
         this.slayerQuest = (SlayerQuest) config.get("slayer.quest");
+        if (config.contains("pets"))
+        {
+            this.pets = (List<Pet.PetItem>) config.getList("pets");
+        }
     }
 
     public void save()
@@ -193,6 +201,7 @@ public class User
         config.set("xp.slayer.svenPackmaster", slayerXP[2]);
         config.set("permanentCoins", permanentCoins);
         config.set("slayer.quest", slayerQuest);
+        config.set("pets", pets);
         config.save();
     }
 
@@ -353,6 +362,54 @@ public class User
     public void clearQuiver()
     {
         quiver.clear();
+    }
+
+    public void addPet(SItem item)
+    {
+        pets.add(new Pet.PetItem(item.getType(), item.getRarity(), item.getData().getDouble("xp")));
+    }
+
+    public void equipPet(Pet.PetItem pet)
+    {
+        for (Pet.PetItem p : pets)
+        {
+            if (p.isActive())
+            {
+                p.setActive(false);
+                break;
+            }
+        }
+        pet.setActive(true);
+    }
+
+    public void removePet(Pet.PetItem pet)
+    {
+        for (Iterator<Pet.PetItem> iter = pets.iterator(); iter.hasNext();)
+        {
+            Pet.PetItem p = iter.next();
+            if (pet.equals(p))
+            {
+                iter.remove();
+                break;
+            }
+        }
+    }
+
+    public Pet.PetItem getActivePet()
+    {
+        for (Pet.PetItem pet : pets)
+        {
+            if (pet.isActive())
+                return pet;
+        }
+        return null;
+    }
+
+    public Pet getActivePetClass()
+    {
+        Pet.PetItem item = getActivePet();
+        if (item == null) return null;
+        return (Pet) item.getType().getGenericInstance();
     }
 
     public double getSkillXP(Skill skill)
@@ -539,8 +596,8 @@ public class User
         if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
         EntityHuman human = ((CraftHumanEntity) player).getHandle();
         PlayerStatistics statistics = PlayerUtils.STATISTICS_CACHE.get(player.getUniqueId());
-        int trueDefense = statistics.getTrueDefense().addAll();
-        d = d - (d * ((double) trueDefense / (double) (trueDefense + 100)));
+        double trueDefense = statistics.getTrueDefense().addAll();
+        d = d - (d * (trueDefense / (trueDefense + 100)));
         if ((player.getHealth() + human.getAbsorptionHearts()) - d <= 0.0)
         {
             kill(cause, entity);

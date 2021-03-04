@@ -57,13 +57,13 @@ public class SuperiorDragonSet implements ArmorSet
             }
 
             @Override
-            public int getBaseHealth()
+            public double getBaseHealth()
             {
                 return 23;
             }
 
             @Override
-            public int getBaseStrength()
+            public double getBaseStrength()
             {
                 return 2;
             }
@@ -81,13 +81,13 @@ public class SuperiorDragonSet implements ArmorSet
             }
 
             @Override
-            public int getBaseIntelligence()
+            public double getBaseIntelligence()
             {
                 return 5;
             }
 
             @Override
-            public int getBaseDefense()
+            public double getBaseDefense()
             {
                 return 30;
             }

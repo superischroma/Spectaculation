@@ -52,10 +52,10 @@
       <recent name="me.superischroma.spectaculation.slayer" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="me.superischroma.spectaculation.gui" />
       <recent name="me.superischroma.spectaculation.collection" />
       <recent name="me.superischroma.spectaculation.item.farming" />
       <recent name="me.superischroma.spectaculation.skill" />
-      <recent name="me.superischroma.spectaculation.gui" />
       <recent name="me.superischroma.spectaculation.command" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
@@ -78,10 +78,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="765" y="226" key="#com.intellij.ide.util.MemberChooser" timestamp="1614733186189">
+    <state x="765" y="226" key="#com.intellij.ide.util.MemberChooser" timestamp="1614819812901">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="226" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614733186189" />
+    <state x="765" y="226" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614819812901" />
     <state x="556" y="444" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1614643513948">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -106,30 +106,30 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614736885157" />
-    <state x="690" y="267" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog" timestamp="1614552641710">
+    <state x="690" y="267" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog" timestamp="1614810731709">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="690" y="267" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614552641710" />
+    <state x="690" y="267" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614810731709" />
     <state x="641" y="0" key="#org.jetbrains.kotlin.idea.refactoring.safeDelete.KotlinOverridingDialog" timestamp="1613684568640">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="641" y="0" key="#org.jetbrains.kotlin.idea.refactoring.safeDelete.KotlinOverridingDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1613684568640" />
-    <state width="1877" height="115" key="GridCell.Tab.0.bottom" timestamp="1614789107468">
+    <state width="1877" height="115" key="GridCell.Tab.0.bottom" timestamp="1614836617423">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="115" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614789107468" />
-    <state width="1877" height="115" key="GridCell.Tab.0.center" timestamp="1614789107468">
+    <state width="1877" height="115" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614836617423" />
+    <state width="1877" height="115" key="GridCell.Tab.0.center" timestamp="1614836617423">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="115" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614789107468" />
-    <state width="1877" height="115" key="GridCell.Tab.0.left" timestamp="1614789107468">
+    <state width="1877" height="115" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614836617423" />
+    <state width="1877" height="115" key="GridCell.Tab.0.left" timestamp="1614836617423">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="115" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614789107468" />
-    <state width="1877" height="115" key="GridCell.Tab.0.right" timestamp="1614789107468">
+    <state width="1877" height="115" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614836617423" />
+    <state width="1877" height="115" key="GridCell.Tab.0.right" timestamp="1614836617423">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="115" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614789107468" />
+    <state width="1877" height="115" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614836617423" />
     <state x="461" y="165" key="SettingsEditor" timestamp="1614691677258">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

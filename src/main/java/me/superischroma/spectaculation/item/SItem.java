@@ -44,18 +44,20 @@ public class SItem implements Cloneable
         this.rarity = rarity;
         this.data = data;
         this.lore = new ItemLore(this);
-        if (overwrite)
-        {
-            ItemMeta meta = this.stack.getItemMeta();
-            meta.setLore(this.lore.asBukkitLore());
-            meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS);
-            meta.spigot().setUnbreakable(true);
-            this.stack.setItemMeta(meta);
-        }
         this.origin = origin;
         this.recombobulated = recombobulated;
         if (overwrite)
+        {
+            ItemMeta meta = this.stack.getItemMeta();
+            if (!(type.getStatistics() instanceof LoreableMaterialStatistics))
+                meta.setLore(this.lore.asBukkitLore());
+            else
+                meta.setLore(((LoreableMaterialStatistics) type.getStatistics()).getCustomLore(this));
+            meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS);
+            meta.spigot().setUnbreakable(true);
+            this.stack.setItemMeta(meta);
             update();
+        }
     }
 
     public void enchant(boolean enchant)
@@ -450,7 +452,10 @@ public class SItem implements Cloneable
                 potionMeta.addCustomEffect(type.getColor().createEffect((int) effect.getDuration(), effect.getLevel() - 1), true);
             }
         }
-        meta.setLore(lore.asBukkitLore());
+        if (!(statistics instanceof LoreableMaterialStatistics))
+            meta.setLore(lore.asBukkitLore());
+        else
+            meta.setLore(((LoreableMaterialStatistics) statistics).getCustomLore(this));
         stack.setItemMeta(meta);
         if (type.getGenericInstance() instanceof Enchantable || statistics.isEnchanted())
             enchant(data.getCompound("enchantments").c().size() != 0 || statistics.isEnchanted());

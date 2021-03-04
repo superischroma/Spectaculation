@@ -69,7 +69,7 @@ public class LapisArmorSet implements ArmorSet
             }
 
             @Override
-            public int getBaseHealth()
+            public double getBaseHealth()
             {
                 return 60;
             }

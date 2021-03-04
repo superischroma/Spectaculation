@@ -27,9 +27,9 @@ public class OddReforge implements Reforge
     }
 
     @Override
-    public RarityValue<Integer> getIntelligence()
+    public RarityValue<Double> getIntelligence()
     {
-        return new RarityValue<>(-5, -10, -18, -32, -50, -50);
+        return new RarityValue<>(-5.0, -10.0, -18.0, -32.0, -50.0, -50.0);
     }
 
     @Override

@@ -44,25 +44,25 @@ public class PerfectTalisman implements AccessoryStatistics, MaterialFunction
     }
 
     @Override
-    public int getBaseIntelligence()
+    public double getBaseIntelligence()
     {
         return 800;
     }
 
     @Override
-    public int getBaseStrength()
+    public double getBaseStrength()
     {
         return 500;
     }
 
     @Override
-    public int getBaseHealth()
+    public double getBaseHealth()
     {
         return 300;
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 100;
     }

@@ -30,7 +30,7 @@ public class LapisArmorLeggings implements LeatherArmorStatistics, MaterialFunct
     }
     
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 35;
     }

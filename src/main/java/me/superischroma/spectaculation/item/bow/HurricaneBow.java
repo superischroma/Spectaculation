@@ -70,7 +70,7 @@ public class HurricaneBow implements ToolStatistics, BowFunction, Ability
     }
 
     @Override
-    public int getBaseStrength()
+    public double getBaseStrength()
     {
         return 50;
     }

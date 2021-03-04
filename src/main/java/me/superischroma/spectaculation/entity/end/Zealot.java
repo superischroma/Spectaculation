@@ -1,8 +1,11 @@
 package me.superischroma.spectaculation.entity.end;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import me.superischroma.spectaculation.entity.*;
 import me.superischroma.spectaculation.item.SItem;
 import me.superischroma.spectaculation.item.SMaterial;
+import me.superischroma.spectaculation.item.pet.Pet;
+import me.superischroma.spectaculation.user.User;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,6 +19,7 @@ import org.bukkit.material.MaterialData;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Zealot implements EndermanStatistics, EntityFunction
 {
@@ -47,8 +51,12 @@ public class Zealot implements EndermanStatistics, EntityFunction
     @Override
     public void onDeath(SEntity sEntity, Entity killed, Entity damager)
     {
-        if (SUtil.random(1, 420) != 1) return;
         Player player = (Player) damager;
+        User user = User.getUser(player.getUniqueId());
+        Pet pet = user.getActivePetClass();
+        AtomicDouble chance = new AtomicDouble(420.0);
+        if (pet != null) pet.runAbilities(ability -> ability.onZealotAttempt(chance), user.getActivePet());
+        if (SUtil.random(1.0, chance.get()) != 1) return;
         player.playSound(player.getLocation(), Sound.WITHER_SPAWN, 1f, 1f);
         SUtil.sendTitle(player, ChatColor.RED + "SPECIAL ZEALOT");
         player.sendMessage(ChatColor.GREEN + "A special " + ChatColor.LIGHT_PURPLE + "Zealot" + ChatColor.GREEN + " has spawned nearby!");

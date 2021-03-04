@@ -69,7 +69,7 @@ public class ProtectorDragonSet implements ArmorSet
             }
 
             @Override
-            public int getBaseDefense()
+            public double getBaseDefense()
             {
                 double percentHealth = player.getMaxHealth() * 0.01;
                 int additive = (int) ((player.getMaxHealth() - player.getHealth()) * percentHealth);

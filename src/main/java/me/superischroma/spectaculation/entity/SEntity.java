@@ -168,4 +168,10 @@ public class SEntity // 3, 4, 5
             this.task.cancel();
         entity.remove();
     }
+
+    public static SEntity findSEntity(Entity entity)
+    {
+        if (!entity.hasMetadata("specEntityObject")) return null;
+        return (SEntity) entity.getMetadata("specEntityObject").get(0).value();
+    }
 }

@@ -5,19 +5,19 @@ import me.superischroma.spectaculation.item.*;
 public class WiseDragonHelmet implements MaterialFunction, SkullStatistics, ToolStatistics
 {
     @Override
-    public int getBaseIntelligence()
+    public double getBaseIntelligence()
     {
         return 125;
     }
 
     @Override
-    public int getBaseHealth()
+    public double getBaseHealth()
     {
         return 70;
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 110;
     }

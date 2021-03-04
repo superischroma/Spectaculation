@@ -10,9 +10,9 @@ public interface Reforge
 {
     String getName();
 
-    default RarityValue<Integer> getStrength()
+    default RarityValue<Double> getStrength()
     {
-        return RarityValue.zeroInteger();
+        return RarityValue.zeroDouble();
     }
 
     default RarityValue<Double> getCritChance()
@@ -25,9 +25,9 @@ public interface Reforge
         return RarityValue.zeroDouble();
     }
 
-    default RarityValue<Integer> getIntelligence()
+    default RarityValue<Double> getIntelligence()
     {
-        return RarityValue.zeroInteger();
+        return RarityValue.zeroDouble();
     }
 
     default List<GenericItemType> getCompatibleTypes()

@@ -41,9 +41,9 @@ public class MiningSkill extends Skill
         return ((level - 25.0) * 4.0) / 100.0;
     }
 
-    public int getDefense(int level)
+    public double getDefense(int level)
     {
-        return level < 15 ? level : level + (level - 14);
+        return level < 15.0 ? level : level + (level - 14.0);
     }
 
     @Override

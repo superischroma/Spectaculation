@@ -6,6 +6,7 @@ import me.superischroma.spectaculation.Spectaculation;
 import me.superischroma.spectaculation.item.*;
 import me.superischroma.spectaculation.user.PlayerUtils;
 import me.superischroma.spectaculation.util.SLog;
+import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
@@ -82,7 +83,7 @@ public class MosquitoBow implements ToolStatistics, BowFunction, Ability
     }
 
     @Override
-    public int getBaseStrength()
+    public double getBaseStrength()
     {
         return 101;
     }
@@ -99,7 +100,7 @@ public class MosquitoBow implements ToolStatistics, BowFunction, Ability
         Player player = (Player) e.getEntity();
         if (!player.isSneaking()) return;
         if (e.getForce() != 1.0f) return;
-        int manaPool = PlayerUtils.STATISTICS_CACHE.get(player.getUniqueId()).getIntelligence().addAll() + 100;
+        int manaPool = SUtil.blackMagic(PlayerUtils.STATISTICS_CACHE.get(player.getUniqueId()).getIntelligence().addAll() + 100);
         int cost = PlayerUtils.getFinalManaCost(player, bow, (int) (manaPool * 0.11));
         boolean take = PlayerUtils.takeMana(player, cost);
         if (!take)

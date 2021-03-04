@@ -9,13 +9,13 @@ import me.superischroma.spectaculation.item.armor.LeatherArmorStatistics;
 public class ProtectorDragonLeggings implements MaterialFunction, LeatherArmorStatistics
 {
     @Override
-    public int getBaseHealth()
+    public double getBaseHealth()
     {
         return 100;
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 165;
     }

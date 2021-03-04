@@ -45,7 +45,7 @@ public class ObsidianChestplate implements LeatherArmorStatistics, TickingMateri
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 250;
     }

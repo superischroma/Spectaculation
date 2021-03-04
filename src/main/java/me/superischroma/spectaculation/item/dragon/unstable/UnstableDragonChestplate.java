@@ -21,13 +21,13 @@ public class UnstableDragonChestplate implements MaterialFunction, LeatherArmorS
     }
 
     @Override
-    public int getBaseHealth()
+    public double getBaseHealth()
     {
         return 120;
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 160;
     }

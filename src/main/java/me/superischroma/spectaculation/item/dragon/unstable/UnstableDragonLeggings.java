@@ -21,13 +21,13 @@ public class UnstableDragonLeggings implements MaterialFunction, LeatherArmorSta
     }
 
     @Override
-    public int getBaseHealth()
+    public double getBaseHealth()
     {
         return 100;
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 140;
     }

@@ -30,7 +30,7 @@ public class MinerBoots implements LeatherArmorStatistics, MaterialFunction
     }
     
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 5;
     }

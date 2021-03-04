@@ -36,6 +36,11 @@ public enum Rarity
         return values()[this.ordinal() - 1];
     }
 
+    public boolean isAtLeast(Rarity rarity)
+    {
+        return ordinal() >= rarity.ordinal();
+    }
+
     public String getDisplay()
     {
         return "" + color + ChatColor.BOLD + name().replaceAll("_", " ");

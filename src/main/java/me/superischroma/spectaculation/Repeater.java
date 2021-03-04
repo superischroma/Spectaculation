@@ -58,7 +58,7 @@ public class Repeater
                     if (!PlayerUtils.STATISTICS_CACHE.containsKey(uuid)) PlayerUtils.STATISTICS_CACHE.put(uuid, PlayerUtils.getStatistics(player));
                     PlayerStatistics statistics = PlayerUtils.STATISTICS_CACHE.get(uuid);
 
-                    int manaPool = 100 + statistics.getIntelligence().addAll();
+                    int manaPool = SUtil.blackMagic(100 + statistics.getIntelligence().addAll());
 
                     // Hand Validation and Hand Statistics
                     SItem hand = SItem.find(inventory.getItemInHand());
@@ -69,6 +69,7 @@ public class Repeater
                             player.setItemInHand(hand.getStack());
                     }
                     PlayerUtils.updateHandStatistics(hand, statistics);
+                    PlayerUtils.updatePetStatistics(statistics);
                     User user = User.getUser(player.getUniqueId());
                     for (ActivePotionEffect effect : user.getEffects())
                         effect.setRemaining(effect.getRemaining() - 10);
@@ -127,7 +128,7 @@ public class Repeater
                     player.setHealthScale(Math.min(40.0, 20.0 + ((health - 100.0) / 25.0)));
 
                     // Set Speed Statistics
-                    int defense = statistics.getDefense().addAll();
+                    int defense = SUtil.blackMagic(statistics.getDefense().addAll());
                     player.setWalkSpeed(Math.min((float) (statistics.getSpeed().addAll() / 5.0), 1.0f));
 
                     // Display Action Bar
@@ -140,7 +141,7 @@ public class Repeater
                         replacement = null;
                     }
                     SUtil.sendActionBar(player, color + "" + Math.round(player.getHealth() + absorption)
-                            + "/" + statistics.getMaxHealth().addAll() + "❤     " +
+                            + "/" + SUtil.blackMagic(statistics.getMaxHealth().addAll()) + "❤     " +
                             (replacement == null ? (defense != 0 ? "" + ChatColor.GREEN + defense + "❈ Defense     " : "") :
                                     replacement.getReplacement() + "     ") +
                             ChatColor.AQUA + MANA_MAP.get(player.getUniqueId()) + "/" + manaPool + "✎ Mana");

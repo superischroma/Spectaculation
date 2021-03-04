@@ -71,7 +71,7 @@ public class BigBounceBoots implements LeatherArmorStatistics, TickingMaterial, 
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 75;
     }
@@ -83,7 +83,7 @@ public class BigBounceBoots implements LeatherArmorStatistics, TickingMaterial, 
     }
 
     @Override
-    public int getBaseIntelligence()
+    public double getBaseIntelligence()
     {
         return 100;
     }

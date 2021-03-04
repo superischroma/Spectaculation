@@ -1,5 +1,7 @@
 package me.superischroma.spectaculation.util;
 
+import me.superischroma.spectaculation.entity.SEntity;
+import me.superischroma.spectaculation.entity.SEntityType;
 import me.superischroma.spectaculation.region.RegionType;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -153,6 +155,24 @@ public final class Groups
             Material.BROWN_MUSHROOM,
             Material.RED_MUSHROOM,
             Material.COCOA
+    );
+
+    public static final List<SEntityType> END_MOBS = Arrays.asList(
+            SEntityType.WATCHER,
+            SEntityType.ZEALOT,
+            SEntityType.ENDER_CHEST_ZEALOT,
+            SEntityType.SPECIAL_ZEALOT,
+            SEntityType.WEAK_ENDERMAN,
+            SEntityType.ENDERMAN,
+            SEntityType.STRONG_ENDERMAN,
+            SEntityType.OBSIDIAN_DEFENDER,
+            SEntityType.OLD_DRAGON,
+            SEntityType.PROTECTOR_DRAGON,
+            SEntityType.STRONG_DRAGON,
+            SEntityType.SUPERIOR_DRAGON,
+            SEntityType.UNSTABLE_DRAGON,
+            SEntityType.WISE_DRAGON,
+            SEntityType.YOUNG_DRAGON
     );
 
     public static final List<Material> EXCHANGEABLE_RECIPE_RESULTS = Arrays.asList(Material.WORKBENCH,

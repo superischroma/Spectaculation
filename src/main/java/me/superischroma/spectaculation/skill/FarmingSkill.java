@@ -36,7 +36,7 @@ public class FarmingSkill extends Skill
         return (level * 4.0) / 100.0;
     }
 
-    public int getHealth(int level)
+    public double getHealth(int level)
     {
         int health = level * 2;
         if (level >= 15)

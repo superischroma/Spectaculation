@@ -19,7 +19,7 @@ public class PotionEffectType
     public static final PotionEffectType STRENGTH = new PotionEffectType(ChatColor.DARK_RED + "Strength", "strength",
             "Increases Strength by %s.", org.bukkit.potion.PotionEffectType.INCREASE_DAMAGE,
             ((statistics, slot, level) ->
-                    statistics.getStrength().add(slot, SUtil.getOrDefault(Arrays.asList(5, 12, 20, 30, 40, 50, 60, 75), level - 1, level * 10))),
+                    statistics.getStrength().add(slot, SUtil.getOrDefault(Arrays.asList(5.0, 12.0, 20.0, 30.0, 40.0, 50.0, 60.0, 75.0), level - 1, level * 10.0))),
             false);
 
     public static final PotionEffectType RABBIT = new PotionEffectType(ChatColor.GREEN + "Rabbit", "rabbit",
@@ -91,12 +91,12 @@ public class PotionEffectType
 
     public static final PotionEffectType RESISTANCE = new PotionEffectType(ChatColor.GREEN + "Resistance", "resistance",
             "Increases Defense by %s.", org.bukkit.potion.PotionEffectType.JUMP,
-            ((statistics, slot, level) -> statistics.getDefense().add(slot, SUtil.getOrDefault(Arrays.asList(5, 10, 15, 20, 30, 40, 50, 60),
-                    level - 1, (level * 10) - 20))), false);
+            ((statistics, slot, level) -> statistics.getDefense().add(slot, SUtil.getOrDefault(Arrays.asList(5.0, 10.0, 15.0, 20.0, 30.0, 40.0, 50.0, 60.0),
+                    level - 1, (level * 10.0) - 20.0))), false);
 
     public static final PotionEffectType TRUE_RESISTANCE = new PotionEffectType(ChatColor.WHITE + "True Resistance", "true_resistance",
             "Increases True Defense by %s.", org.bukkit.potion.PotionEffectType.WEAKNESS,
-            ((statistics, slot, level) -> statistics.getTrueDefense().add(slot, level * 5)), false);
+            ((statistics, slot, level) -> statistics.getTrueDefense().add(slot, level * 5.0)), false);
 
     public static final PotionEffectType STAMINA = new PotionEffectType(ChatColor.GREEN + "Stamina", "stamina",
             "Grants an instant %s Health and %s Mana boost.", org.bukkit.potion.PotionEffectType.JUMP,

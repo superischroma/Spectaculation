@@ -10,6 +10,7 @@ import me.superischroma.spectaculation.gui.GUIListener;
 import me.superischroma.spectaculation.item.SItem;
 import me.superischroma.spectaculation.item.SMaterial;
 import me.superischroma.spectaculation.item.SpecItemListener;
+import me.superischroma.spectaculation.item.pet.Pet;
 import me.superischroma.spectaculation.listener.BlockListener;
 import me.superischroma.spectaculation.listener.PlayerListener;
 import me.superischroma.spectaculation.listener.ServerPingListener;
@@ -277,5 +278,6 @@ public final class Spectaculation extends JavaPlugin
     private void loadSerializableClasses()
     {
         ConfigurationSerialization.registerClass(SlayerQuest.class, "SlayerQuest");
+        ConfigurationSerialization.registerClass(Pet.PetItem.class, "PetItem");
     }
 }

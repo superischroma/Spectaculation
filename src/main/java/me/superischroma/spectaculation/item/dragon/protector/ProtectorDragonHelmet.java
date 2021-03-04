@@ -5,13 +5,13 @@ import me.superischroma.spectaculation.item.*;
 public class ProtectorDragonHelmet implements MaterialFunction, SkullStatistics, ToolStatistics
 {
     @Override
-    public int getBaseHealth()
+    public double getBaseHealth()
     {
         return 70;
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 135;
     }

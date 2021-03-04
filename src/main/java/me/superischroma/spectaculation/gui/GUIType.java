@@ -21,6 +21,7 @@ public enum GUIType
     SVEN_PACKMASTER(SvenPackmasterGUI.class),
     COLLECTION_MENU(CollectionMenuGUI.class),
     SKILL_MENU(SkillMenuGUI.class),
+    PETS(PetsGUI.class);
     ;
 
     private final Class<? extends GUI> gui;

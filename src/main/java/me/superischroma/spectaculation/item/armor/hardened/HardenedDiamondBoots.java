@@ -2,8 +2,6 @@ package me.superischroma.spectaculation.item.armor.hardened;
 
 import me.superischroma.spectaculation.item.*;
 
-import java.util.List;
-
 public class HardenedDiamondBoots implements ToolStatistics, MaterialFunction
 {
     @Override
@@ -31,7 +29,7 @@ public class HardenedDiamondBoots implements ToolStatistics, MaterialFunction
     }
     
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 55;
     }

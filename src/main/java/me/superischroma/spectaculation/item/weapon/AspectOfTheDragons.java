@@ -20,7 +20,7 @@ public class AspectOfTheDragons implements ToolStatistics, MaterialFunction, Abi
     }
 
     @Override
-    public int getBaseStrength()
+    public double getBaseStrength()
     {
         return 100;
     }

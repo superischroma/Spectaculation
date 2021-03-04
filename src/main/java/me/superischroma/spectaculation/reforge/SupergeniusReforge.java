@@ -11,8 +11,8 @@ public class SupergeniusReforge implements Reforge
     }
 
     @Override
-    public RarityValue<Integer> getIntelligence()
+    public RarityValue<Double> getIntelligence()
     {
-        return RarityValue.singleInteger(1000000);
+        return RarityValue.singleDouble(1000000.0);
     }
 }

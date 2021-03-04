@@ -72,7 +72,7 @@ public class SpidersBoots implements ToolStatistics, TickingMaterial, FlightStat
     }
 
     @Override
-    public int getBaseDefense()
+    public double getBaseDefense()
     {
         return 45;
     }
@@ -84,7 +84,7 @@ public class SpidersBoots implements ToolStatistics, TickingMaterial, FlightStat
     }
 
     @Override
-    public int getBaseIntelligence()
+    public double getBaseIntelligence()
     {
         return 50;
     }

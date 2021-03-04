@@ -11,7 +11,7 @@ public class Exterminator implements ToolStatistics, MaterialFunction
     }
 
     @Override
-    public int getBaseStrength()
+    public double getBaseStrength()
     {
         return 100000;
     }
