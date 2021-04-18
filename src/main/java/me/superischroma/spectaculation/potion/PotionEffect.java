@@ -57,6 +57,11 @@ public class PotionEffect
         return SUtil.getFormattedTime(duration);
     }
 
+    public String getDisplayName()
+    {
+        return type.getName() + " " + SUtil.toRomanNumeral(level);
+    }
+
     public NBTTagCompound toCompound()
     {
         NBTTagCompound compound = new NBTTagCompound();

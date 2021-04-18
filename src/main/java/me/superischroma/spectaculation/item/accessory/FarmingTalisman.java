@@ -6,7 +6,6 @@ import me.superischroma.spectaculation.item.Rarity;
 import me.superischroma.spectaculation.item.SItem;
 import me.superischroma.spectaculation.region.Region;
 import me.superischroma.spectaculation.region.RegionType;
-import me.superischroma.spectaculation.user.PlayerStatistic;
 import me.superischroma.spectaculation.user.PlayerUtils;
 import org.bukkit.entity.Player;
 
@@ -33,7 +32,7 @@ public class FarmingTalisman implements AccessoryStatistics, AccessoryFunction
     @Override
     public void update(SItem instance, Player player, int accessorySlot)
     {
-        Region region = Region.getRegionOfEntity(player);
+        Region region = Region.getQuickRegionOfEntity(player);
         if (region == null) return;
         if (region.getType() != RegionType.THE_BARN && region.getType() != RegionType.MUSHROOM_DESERT) return;
         PlayerUtils.addBoostStatistics(PlayerUtils.STATISTICS_CACHE.get(player.getUniqueId()), accessorySlot, new PlayerBoostStatistics()

@@ -1,8 +1,6 @@
-package me.superischroma.spectaculation;
+package me.superischroma.spectaculation.sequence;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 
 import java.util.ArrayList;
@@ -11,10 +9,6 @@ import java.util.List;
 public class AnimationSequenceType
 {
     private static final List<AnimationSequenceType> TYPES = new ArrayList<>();
-
-    //public static final AnimationSequenceType SLAYER_BOSS_SPAWN = new AnimationSequenceType("slayer_boss_spawn",
-    //        new AnimationSequence(new AnimationSequence.DelayedAnimation(Effect.))
-    //);
 
     private final String namespace;
     private final AnimationSequence sequence;

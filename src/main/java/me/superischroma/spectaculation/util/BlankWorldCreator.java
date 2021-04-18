@@ -6,7 +6,7 @@ import org.bukkit.generator.ChunkGenerator;
 
 import java.util.Random;
 
-public class BlankWorldCreator extends WorldCreator
+public class BlankWorldCreator extends WorldCreator // todo: fix this
 {
     public BlankWorldCreator(String name)
     {

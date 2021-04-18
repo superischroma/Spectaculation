@@ -13,6 +13,7 @@ import me.superischroma.spectaculation.region.RegionType;
 import me.superischroma.spectaculation.sidebar.Sidebar;
 import me.superischroma.spectaculation.slayer.SlayerQuest;
 import me.superischroma.spectaculation.user.*;
+import me.superischroma.spectaculation.util.DefenseReplacement;
 import me.superischroma.spectaculation.util.SUtil;
 import net.minecraft.server.v1_8_R3.EntityHuman;
 import org.bukkit.Bukkit;
@@ -170,7 +171,7 @@ public class Repeater
                     sidebar.add(ChatColor.GRAY + " " + (hours > 12 ? hours - 12 : (hours == 0 ? 12 : hours)) + ":" + SUtil.zeroed(minutes) +
                             (hours >= 12 ? "pm" : "am") + " " + (day ? ChatColor.YELLOW + "☀" : ChatColor.AQUA + "☽"));
                     String location = "None";
-                    Region region = Region.getAreaOfEntity(player);
+                    Region region = Region.getRegionOfEntity(player);
                     if (region != null)
                     {
                         user.setLastRegion(region);
@@ -247,9 +248,4 @@ public class Repeater
             task.cancel();
     }
 
-    public interface DefenseReplacement
-    {
-        String getReplacement();
-        long getEnd();
-    }
 }

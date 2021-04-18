@@ -1,5 +1,6 @@
-package me.superischroma.spectaculation;
+package me.superischroma.spectaculation.sequence;
 
+import me.superischroma.spectaculation.Spectaculation;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;

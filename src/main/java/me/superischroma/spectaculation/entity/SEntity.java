@@ -171,7 +171,10 @@ public class SEntity // 3, 4, 5
 
     public static SEntity findSEntity(Entity entity)
     {
-        if (!entity.hasMetadata("specEntityObject")) return null;
+        if (!entity.hasMetadata("specEntityObject") ||
+                entity.getMetadata("specEntityObject").size() == 0 ||
+                !(entity.getMetadata("specEntityObject").get(0).value() instanceof SEntity))
+            return null;
         return (SEntity) entity.getMetadata("specEntityObject").get(0).value();
     }
 }

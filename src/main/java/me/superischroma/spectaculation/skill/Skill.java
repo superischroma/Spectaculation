@@ -1,8 +1,7 @@
 package me.superischroma.spectaculation.skill;
 
+import me.superischroma.spectaculation.util.DefenseReplacement;
 import me.superischroma.spectaculation.Repeater;
-import me.superischroma.spectaculation.item.ExperienceRewardStatistics;
-import me.superischroma.spectaculation.item.SMaterial;
 import me.superischroma.spectaculation.item.pet.Pet;
 import me.superischroma.spectaculation.user.User;
 import me.superischroma.spectaculation.util.SUtil;
@@ -85,9 +84,9 @@ public abstract class Skill
         return goal - xp;
     }
 
-    public static Repeater.DefenseReplacement getProgressReplacement(Skill skill, double xp, double additive, long end)
+    public static DefenseReplacement getProgressReplacement(Skill skill, double xp, double additive, long end)
     {
-        return new Repeater.DefenseReplacement()
+        return new DefenseReplacement()
         {
             @Override
             public String getReplacement()

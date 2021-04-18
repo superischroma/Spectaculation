@@ -9,8 +9,8 @@ import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,7 +27,7 @@ public abstract class GUI
     @Setter
     protected String title;
     @Getter
-    protected final int size;
+    protected int size;
     @Getter
     protected List<GUIItem> items;
 
@@ -208,6 +208,7 @@ public abstract class GUI
 
     public void open(Player player)
     {
+        early(player);
         Inventory inventory = Bukkit.createInventory(player, size, title);
         GUIOpenEvent openEvent = new GUIOpenEvent(player, this, inventory);
         Spectaculation.getPlugin().getServer().getPluginManager().callEvent(openEvent);
@@ -224,4 +225,6 @@ public abstract class GUI
     public void update(Inventory inventory) {}
     public void onOpen(GUIOpenEvent e) {}
     public void onClose(InventoryCloseEvent e) {}
+    public void early(Player player) {}
+    public void onBottomClick(InventoryClickEvent e) {}
 }

@@ -3,6 +3,9 @@ package me.superischroma.spectaculation.user;
 import com.google.common.util.concurrent.AtomicDouble;
 import lombok.Getter;
 import lombok.Setter;
+import me.superischroma.spectaculation.auction.AuctionBid;
+import me.superischroma.spectaculation.auction.AuctionEscrow;
+import me.superischroma.spectaculation.auction.AuctionItem;
 import me.superischroma.spectaculation.item.pet.Pet;
 import me.superischroma.spectaculation.skill.*;
 import me.superischroma.spectaculation.slayer.SlayerBossType;
@@ -35,6 +38,7 @@ import org.bukkit.util.Vector;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class User
 {
@@ -80,6 +84,14 @@ public class User
     private SlayerQuest slayerQuest;
     @Getter
     private List<Pet.PetItem> pets;
+    @Getter
+    private AuctionSettings auctionSettings;
+    @Getter
+    @Setter
+    private boolean auctionCreationBIN;
+    @Getter
+    @Setter
+    private AuctionEscrow auctionEscrow;
 
     private User(UUID uuid)
     {
@@ -100,6 +112,9 @@ public class User
         this.slayerXP = new int[3];
         this.permanentCoins = false;
         this.pets = new ArrayList<>();
+        this.auctionSettings = new AuctionSettings();
+        this.auctionCreationBIN = false;
+        this.auctionEscrow = new AuctionEscrow();
         if (!USER_FOLDER.exists()) USER_FOLDER.mkdirs();
         String path = uuid.toString() + ".yml";
         File configFile = new File(USER_FOLDER, path);
@@ -165,6 +180,13 @@ public class User
         {
             this.pets = (List<Pet.PetItem>) config.getList("pets");
         }
+        this.auctionSettings = (AuctionSettings) config.get("auction.settings");
+        if (this.auctionSettings == null)
+            this.auctionSettings = new AuctionSettings();
+        this.auctionCreationBIN = config.getBoolean("auction.creationBIN");
+        this.auctionEscrow = (AuctionEscrow) config.get("auction.escrow");
+        if (this.auctionEscrow == null)
+            this.auctionEscrow = new AuctionEscrow();
     }
 
     public void save()
@@ -177,7 +199,8 @@ public class User
         config.set("bankCoins", bankCoins);
         config.set("island.x", islandX);
         config.set("island.z", islandZ);
-        config.set("lastRegion", lastRegion.getName());
+        if (lastRegion != null)
+            config.set("lastRegion", lastRegion.getName());
         config.set("quiver", null);
         for (Map.Entry<SMaterial, Integer> entry : quiver.entrySet())
             config.set("quiver." + entry.getKey().name().toLowerCase(), entry.getValue());
@@ -202,6 +225,9 @@ public class User
         config.set("permanentCoins", permanentCoins);
         config.set("slayer.quest", slayerQuest);
         config.set("pets", pets);
+        config.set("auction.settings", auctionSettings);
+        config.set("auction.creationBIN", auctionCreationBIN);
+        config.set("auction.escrow", auctionEscrow);
         config.save();
     }
 
@@ -640,7 +666,7 @@ public class User
         String name = null;
         if (entity != null)
         {
-            SEntity sEntity = entity.hasMetadata("specEntityObject") ? (SEntity) entity.getMetadata("specEntityObject").get(0).value() : null;
+            SEntity sEntity = SEntity.findSEntity(entity);
             name = sEntity != null ? sEntity.getStatistics().getEntityName() : entity.getCustomName();
         }
         String message = "You died.";
@@ -815,6 +841,24 @@ public class User
                 x < islandX - ISLAND_SIZE && x > islandX + ISLAND_SIZE && z < islandZ - ISLAND_SIZE && z > islandZ + ISLAND_SIZE;
     }
 
+    public List<AuctionItem> getBids()
+    {
+        return AuctionItem.getAuctions().stream().filter((item) ->
+        {
+            for (AuctionBid bid : item.getBids())
+            {
+                if (bid.getBidder().equals(uuid) && item.getParticipants().contains(uuid))
+                    return true;
+            }
+            return false;
+        }).collect(Collectors.toList());
+    }
+
+    public List<AuctionItem> getAuctions()
+    {
+        return AuctionItem.getAuctions().stream().filter((item) -> item.getOwner().getUuid().equals(uuid) && item.getParticipants().contains(uuid)).collect(Collectors.toList());
+    }
+
     public void sendToSpawn()
     {
         Player player = Bukkit.getPlayer(uuid);
@@ -895,6 +939,7 @@ public class User
 
     public static User getUser(UUID uuid)
     {
+        if (uuid == null) return null;
         if (USER_CACHE.containsKey(uuid)) return USER_CACHE.get(uuid);
         return new User(uuid);
     }

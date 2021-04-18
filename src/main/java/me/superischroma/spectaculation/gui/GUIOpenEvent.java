@@ -1,6 +1,7 @@
 package me.superischroma.spectaculation.gui;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -13,6 +14,9 @@ public class GUIOpenEvent extends PlayerEvent implements Cancellable
     @Getter
     private final GUI opened;
     @Getter
+    @Setter
+    private String title;
+    @Getter
     private final Inventory inventory;
     private boolean cancelled;
 
@@ -20,6 +24,7 @@ public class GUIOpenEvent extends PlayerEvent implements Cancellable
     {
         super(player);
         this.opened = opened;
+        this.title = opened.getTitle();
         this.inventory = inventory;
     }
 

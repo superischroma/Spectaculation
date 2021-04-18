@@ -12,5 +12,6 @@ public interface PetAbility
     String getName();
     List<String> getDescription(SItem instance);
     default void onHurt(EntityDamageByEntityEvent e, Entity damager) {}
+    default void onDamage(EntityDamageByEntityEvent e) {}
     default void onZealotAttempt(AtomicDouble chance) {}
 }

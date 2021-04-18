@@ -3,7 +3,9 @@ package me.superischroma.spectaculation.listener;
 import me.superischroma.spectaculation.Spectaculation;
 import me.superischroma.spectaculation.entity.SEntity;
 import me.superischroma.spectaculation.entity.SlimeStatistics;
+import me.superischroma.spectaculation.entity.caverns.CreeperFunction;
 import me.superischroma.spectaculation.entity.nms.Dragon;
+import me.superischroma.spectaculation.event.CreeperIgniteEvent;
 import me.superischroma.spectaculation.item.*;
 import me.superischroma.spectaculation.region.Region;
 import me.superischroma.spectaculation.region.RegionType;
@@ -14,6 +16,7 @@ import me.superischroma.spectaculation.skill.Skill;
 import me.superischroma.spectaculation.user.PlayerUtils;
 import me.superischroma.spectaculation.user.User;
 import me.superischroma.spectaculation.util.Groups;
+import me.superischroma.spectaculation.util.SLog;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -22,11 +25,9 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -77,6 +78,24 @@ public class WorldListener extends PListener
     }
 
     @EventHandler
+    public void onEntityDeath(EntityDeathEvent e)
+    {
+        Entity entity = e.getEntity();
+        if (!entity.hasMetadata("specEntityObject")) return;
+        e.getDrops().clear();
+    }
+
+    @EventHandler
+    public void onCreeperIgnite(CreeperIgniteEvent e)
+    {
+        Creeper creeper = e.getEntity();
+        SEntity sEntity = SEntity.findSEntity(creeper);
+        if (sEntity == null) return;
+        if (sEntity.getFunction() instanceof CreeperFunction)
+            ((CreeperFunction) sEntity.getFunction()).onCreeperIgnite(e, sEntity);
+    }
+
+    @EventHandler
     public void onLeafDecay(LeavesDecayEvent e)
     {
         e.setCancelled(true);
@@ -105,10 +124,7 @@ public class WorldListener extends PListener
                         int level = Skill.getLevel(user.getSkillXP(ForagingSkill.INSTANCE), ForagingSkill.INSTANCE.hasSixtyLevels());
                         double d = ForagingSkill.INSTANCE.getDoubleDropChance(level);
                         double t = ForagingSkill.INSTANCE.getTripleDropChance(level);
-                        if (SUtil.random(0.0, 1.0) < t)
-                            block.getWorld().dropItemNaturally(block.getLocation().clone().add(0.5, 0.5, 0.5), SUtil.setStackAmount(SItem.of(equiv).getStack(), 2));
-                        else if (SUtil.random(0.0, 1.0) < d)
-                            block.getWorld().dropItemNaturally(block.getLocation().clone().add(0.5, 0.5, 0.5), SItem.of(equiv).getStack());
+                        extraDrops(drops, d, t, block);
                         addToRestorer(block, player);
                     }
                 }
@@ -119,9 +135,7 @@ public class WorldListener extends PListener
                         allowBreak = true;
                         int level = Skill.getLevel(user.getSkillXP(FarmingSkill.INSTANCE), FarmingSkill.INSTANCE.hasSixtyLevels());
                         double d = FarmingSkill.INSTANCE.getDoubleDropChance(level);
-                        if (SUtil.random(0.0, 1.0) < d)
-                            block.getWorld().dropItemNaturally(block.getLocation().clone().add(0.5, 0.5, 0.5), SItem.of(equiv).getStack());
-                        addToRestorer(block, player);
+                        extraDrops(drops, d, 0.0, block);
                     }
                 }
                 if (Groups.MINING_REGIONS.contains(region.getType()))
@@ -168,14 +182,12 @@ public class WorldListener extends PListener
                         double t = MiningSkill.INSTANCE.getTripleDropChance(level);
                         for (ItemStack drop : drops)
                         {
-                            int amount = 1;
-                            if (SUtil.random(0.0, 1.0) < t)
-                                amount = 3;
-                            else if (SUtil.random(0.0, 1.0) < d)
-                                amount = 2;
+                            SItem conv = SItem.convert(drop);
+                            conv.setOrigin(ItemOrigin.NATURAL_BLOCK);
                             block.getWorld().dropItemNaturally(block.getLocation().clone().add(0.5, 0.5, 0.5),
-                                    SUtil.setStackAmount(drop, amount));
+                                    conv.getStack());
                         }
+                        extraDrops(drops, d, t, block);
                     }
                     if (block.getType() == Material.GLOWSTONE)
                     {
@@ -218,8 +230,8 @@ public class WorldListener extends PListener
     public void onEntityTarget(EntityTargetLivingEntityEvent e)
     {
         Entity entity = e.getEntity();
-        if (!entity.hasMetadata("specEntityObject")) return;
-        SEntity sEntity = (SEntity) entity.getMetadata("specEntityObject").get(0).value();
+        SEntity sEntity = SEntity.findSEntity(entity);
+        if (sEntity == null) return;
         sEntity.getFunction().onTarget(sEntity, e);
         if (!(sEntity.getGenericInstance() instanceof Dragon)) return;
         e.setCancelled(true);
@@ -275,10 +287,9 @@ public class WorldListener extends PListener
     public void onSlimeSplit(SlimeSplitEvent e)
     {
         Slime slime = e.getEntity();
-        if (slime.hasMetadata("specEntityObject"))
+        SEntity sEntity = SEntity.findSEntity(slime);
+        if (sEntity != null)
         {
-            List<MetadataValue> values = slime.getMetadata("specEntityObject");
-            SEntity sEntity = (SEntity) values.get(0).value();
             if (sEntity.getStatistics() instanceof SlimeStatistics && !((SlimeStatistics) sEntity.getStatistics()).split())
                 e.setCancelled(true);
         }
@@ -305,6 +316,22 @@ public class WorldListener extends PListener
                     RESTORER.remove(player.getUniqueId());
                 }
             }.runTaskLater(Spectaculation.getPlugin(), 60 * 20);
+        }
+    }
+
+    private static void extraDrops(Collection<ItemStack> drops, double d, double t, Block block)
+    {
+        for (ItemStack drop : drops)
+        {
+            int amount = 0;
+            if (SUtil.random(0.0, 1.0) < t)
+                amount = 2;
+            else if (SUtil.random(0.0, 1.0) < d)
+                amount = 1;
+            if (amount == 0)
+                continue;
+            block.getWorld().dropItemNaturally(block.getLocation().clone().add(0.5, 0.5, 0.5),
+                    SUtil.setStackAmount(drop, amount));
         }
     }
 

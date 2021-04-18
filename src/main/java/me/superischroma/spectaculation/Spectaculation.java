@@ -1,15 +1,17 @@
 package me.superischroma.spectaculation;
 
 import lombok.SneakyThrows;
+import me.superischroma.spectaculation.auction.AuctionBid;
+import me.superischroma.spectaculation.auction.AuctionEscrow;
+import me.superischroma.spectaculation.auction.AuctionItem;
 import me.superischroma.spectaculation.command.*;
 import me.superischroma.spectaculation.config.Config;
 import me.superischroma.spectaculation.entity.EntityPopulator;
+import me.superischroma.spectaculation.entity.EntitySpawner;
 import me.superischroma.spectaculation.entity.SEntityType;
 import me.superischroma.spectaculation.entity.StaticDragonManager;
 import me.superischroma.spectaculation.gui.GUIListener;
-import me.superischroma.spectaculation.item.SItem;
-import me.superischroma.spectaculation.item.SMaterial;
-import me.superischroma.spectaculation.item.SpecItemListener;
+import me.superischroma.spectaculation.item.*;
 import me.superischroma.spectaculation.item.pet.Pet;
 import me.superischroma.spectaculation.listener.BlockListener;
 import me.superischroma.spectaculation.listener.PlayerListener;
@@ -19,9 +21,11 @@ import me.superischroma.spectaculation.region.Region;
 import me.superischroma.spectaculation.region.RegionType;
 import me.superischroma.spectaculation.sql.*;
 import me.superischroma.spectaculation.slayer.SlayerQuest;
+import me.superischroma.spectaculation.user.AuctionSettings;
 import me.superischroma.spectaculation.user.User;
 import me.superischroma.spectaculation.util.Groups;
 import me.superischroma.spectaculation.util.SLog;
+import me.superischroma.spectaculation.util.SerialNBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -50,9 +54,9 @@ public final class Spectaculation extends JavaPlugin
     public Config config;
     public Config heads;
     public Config blocks;
+    public Config spawners;
     public CommandMap commandMap;
     public SQLDatabase sql;
-    public SQLLauncherData launcherData;
     public SQLRegionData regionData;
     public SQLWorldData worldData;
     public CommandLoader cl;
@@ -74,6 +78,7 @@ public final class Spectaculation extends JavaPlugin
         config = new Config("config.yml");
         heads = new Config("heads.yml");
         blocks = new Config("blocks.yml");
+        spawners = new Config("spawners.yml");
         SLog.info("Loading command map...");
         try
         {
@@ -88,7 +93,6 @@ public final class Spectaculation extends JavaPlugin
         }
         SLog.info("Loading SQL database...");
         sql = new SQLDatabase();
-        launcherData = new SQLLauncherData();
         regionData = new SQLRegionData();
         worldData = new SQLWorldData();
         cl = new CommandLoader();
@@ -100,10 +104,12 @@ public final class Spectaculation extends JavaPlugin
         loadListeners();
         SLog.info("Registering Citizens traits...");
         registerTraits();
-        SLog.info("Starting entity populators...");
-        startPopulators();
+        SLog.info("Starting entity spawners...");
+        EntitySpawner.startSpawnerTask();
         SLog.info("Establishing player regions...");
         Region.cacheRegions();
+        SLog.info("Loading auction items from disk...");
+        AuctionItem.loadAuctionsFromDisk();
         SkyBlockCalendar.ELAPSED = plugin.config.getLong("timeElapsed");
         SLog.info("Synchronizing world time with calendar time and removing world entities...");
         for (World world : Bukkit.getWorlds())
@@ -173,8 +179,8 @@ public final class Spectaculation extends JavaPlugin
         }
         SLog.info("Stopping server loop...");
         repeater.stop();
-        SLog.info("Stopping entity populators...");
-        EntityPopulator.stopAll();
+        SLog.info("Stopping entity spawners...");
+        EntitySpawner.stopSpawnerTask();
         SLog.info("Ending dragon fight... (if one is currently active)");
         StaticDragonManager.endFight();
         SLog.info("Saving calendar time...");
@@ -182,6 +188,9 @@ public final class Spectaculation extends JavaPlugin
         SLog.info("Saving user data...");
         for (User user : User.getCachedUsers())
             user.save();
+        SLog.info("Saving auction data...");
+        for (AuctionItem item : AuctionItem.getAuctions())
+            item.save();
         plugin = null;
         SLog.info("Disabled " + this.getDescription().getFullName());
     }
@@ -192,7 +201,6 @@ public final class Spectaculation extends JavaPlugin
         cl.register(new RegionCommand());
         cl.register(new PlayEnumSoundCommand());
         cl.register(new PlayEnumEffectCommand());
-        cl.register(new LauncherRegionCommand());
         cl.register(new SpawnSpecCommand());
         cl.register(new ItemCommand());
         cl.register(new SpecEnchantmentCommand());
@@ -214,6 +222,9 @@ public final class Spectaculation extends JavaPlugin
         cl.register(new AbsorptionCommand());
         cl.register(new SkillsCommand());
         cl.register(new CollectionsCommand());
+        cl.register(new MaterialDataCommand());
+        cl.register(new EntitySpawnersCommand());
+        cl.register(new AuctionHouseCommand());
     }
 
     private void loadListeners()
@@ -221,7 +232,7 @@ public final class Spectaculation extends JavaPlugin
         new BlockListener();
         new PlayerListener();
         new ServerPingListener();
-        new SpecItemListener();
+        new ItemListener();
         new GUIListener();
         new WorldListener();
     }
@@ -279,5 +290,10 @@ public final class Spectaculation extends JavaPlugin
     {
         ConfigurationSerialization.registerClass(SlayerQuest.class, "SlayerQuest");
         ConfigurationSerialization.registerClass(Pet.PetItem.class, "PetItem");
+        ConfigurationSerialization.registerClass(SItem.class, "SItem");
+        ConfigurationSerialization.registerClass(AuctionSettings.class, "AuctionSettings");
+        ConfigurationSerialization.registerClass(AuctionEscrow.class, "AuctionEscrow");
+        ConfigurationSerialization.registerClass(SerialNBTTagCompound.class, "SerialNBTTagCompound");
+        ConfigurationSerialization.registerClass(AuctionBid.class, "AuctionBid");
     }
 }

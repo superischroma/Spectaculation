@@ -1,6 +1,6 @@
 package me.superischroma.spectaculation.item.oddities;
 
-import me.superischroma.spectaculation.SoundSequenceType;
+import me.superischroma.spectaculation.sequence.SoundSequenceType;
 import me.superischroma.spectaculation.command.BatphoneCommand;
 import me.superischroma.spectaculation.item.*;
 import me.superischroma.spectaculation.util.SUtil;

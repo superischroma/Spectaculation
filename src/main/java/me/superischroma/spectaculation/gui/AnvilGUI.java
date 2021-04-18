@@ -203,13 +203,10 @@ public class AnvilGUI extends GUI implements BlockBasedGUI
                     for (Enchantment enchantment : specSacrifice.getEnchantments())
                     {
                         Enchantment equiv = display.getEnchantment(enchantment.getType());
-                        SLog.info(equiv);
                         if (equiv != null)
                         {
-                            SLog.info("equiv isnt null");
                             if (equiv.getLevel() == enchantment.getLevel())
                             {
-                                SLog.info("level is equal");
                                 display.removeEnchantment(enchantment.getType());
                                 display.addEnchantment(enchantment.getType(), enchantment.getLevel() + 1);
                                 continue;

@@ -14,6 +14,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -40,23 +41,27 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="me.superischroma.spectaculation.util.SUtil" />
+      <recent name="me.superischroma.spectaculation.listener.PlayerListener" />
       <recent name="me.superischroma.spectaculation.user.ItemCollection" />
       <recent name="me.superischroma.spectaculation.skill.Skill" />
-      <recent name="me.superischroma.spectaculation.util.SUtil" />
       <recent name="me.superischroma.spectaculation.SlayerBossType" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="me.superischroma.spectaculation.auction" />
+      <recent name="me.superischroma.spectaculation.item" />
       <recent name="me.superischroma.spectaculation.collection" />
     </key>
     <key name="MoveInnerDialog.RECENTS_KEY">
+      <recent name="me.superischroma.spectaculation" />
       <recent name="me.superischroma.spectaculation.slayer" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="me.superischroma.spectaculation.gui" />
+      <recent name="me.superischroma.spectaculation.command" />
+      <recent name="me.superischroma.spectaculation.item.enchanted" />
       <recent name="me.superischroma.spectaculation.collection" />
       <recent name="me.superischroma.spectaculation.item.farming" />
-      <recent name="me.superischroma.spectaculation.skill" />
-      <recent name="me.superischroma.spectaculation.command" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\GitHub\Spectaculation\src\main\java\me\superischroma\spectaculation\item\armor\hardened" />
@@ -78,78 +83,82 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="765" y="226" key="#com.intellij.ide.util.MemberChooser" timestamp="1614819812901">
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1616024336312">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="226" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614819812901" />
-    <state x="556" y="444" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1614643513948">
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616024336312" />
+    <state x="765" y="226" key="#com.intellij.ide.util.MemberChooser" timestamp="1616115645954">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="556" y="444" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614643513948" />
-    <state x="693" y="389" width="752" height="270" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1614643449241">
+    <state x="765" y="226" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616115645954" />
+    <state x="556" y="444" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1614868753662">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="693" y="389" width="752" height="270" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614643449241" />
-    <state x="743" y="364" key="#com.intellij.refactoring.move.moveInner.MoveInnerDialog" timestamp="1614643515425">
+    <state x="556" y="444" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614868753662" />
+    <state x="693" y="389" width="752" height="270" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1616016131618">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="743" y="364" key="#com.intellij.refactoring.move.moveInner.MoveInnerDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614643515425" />
-    <state x="671" y="273" key="#com.intellij.refactoring.move.moveMembers.MoveMembersDialog" timestamp="1614639114387">
+    <state x="693" y="389" width="752" height="270" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616016131618" />
+    <state x="743" y="364" key="#com.intellij.refactoring.move.moveInner.MoveInnerDialog" timestamp="1614868754624">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="671" y="273" key="#com.intellij.refactoring.move.moveMembers.MoveMembersDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614639114387" />
-    <state x="582" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1612558591267">
+    <state x="743" y="364" key="#com.intellij.refactoring.move.moveInner.MoveInnerDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614868754624" />
+    <state x="671" y="273" key="#com.intellij.refactoring.move.moveMembers.MoveMembersDialog" timestamp="1615934767691">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="582" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1612558591267" />
-    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1614736885157">
+    <state x="671" y="273" key="#com.intellij.refactoring.move.moveMembers.MoveMembersDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615934767691" />
+    <state x="582" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1615930121415">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614736885157" />
-    <state x="690" y="267" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog" timestamp="1614810731709">
+    <state x="582" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615930121415" />
+    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1616114469860">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="690" y="267" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614810731709" />
+    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616114469860" />
+    <state x="690" y="267" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog" timestamp="1615951099377">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="690" y="267" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615951099377" />
     <state x="641" y="0" key="#org.jetbrains.kotlin.idea.refactoring.safeDelete.KotlinOverridingDialog" timestamp="1613684568640">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="641" y="0" key="#org.jetbrains.kotlin.idea.refactoring.safeDelete.KotlinOverridingDialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1613684568640" />
-    <state width="1877" height="115" key="GridCell.Tab.0.bottom" timestamp="1614836617423">
+    <state width="1877" height="106" key="GridCell.Tab.0.bottom" timestamp="1616222564711">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="115" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614836617423" />
-    <state width="1877" height="115" key="GridCell.Tab.0.center" timestamp="1614836617423">
+    <state width="1877" height="106" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616222564711" />
+    <state width="1877" height="106" key="GridCell.Tab.0.center" timestamp="1616222564711">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="115" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614836617423" />
-    <state width="1877" height="115" key="GridCell.Tab.0.left" timestamp="1614836617423">
+    <state width="1877" height="106" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616222564711" />
+    <state width="1877" height="106" key="GridCell.Tab.0.left" timestamp="1616222564711">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="115" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614836617423" />
-    <state width="1877" height="115" key="GridCell.Tab.0.right" timestamp="1614836617423">
+    <state width="1877" height="106" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616222564711" />
+    <state width="1877" height="106" key="GridCell.Tab.0.right" timestamp="1616222564711">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="115" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614836617423" />
-    <state x="461" y="165" key="SettingsEditor" timestamp="1614691677258">
+    <state width="1877" height="106" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616222564711" />
+    <state x="461" y="165" key="SettingsEditor" timestamp="1614864709931">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="461" y="165" key="SettingsEditor/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614691677258" />
+    <state x="461" y="165" key="SettingsEditor/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614864709931" />
     <state width="498" height="446" key="SwitcherDM" timestamp="1610746765484">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1610746765484" />
-    <state x="195" y="268" key="caller.chooser.dialog" timestamp="1614553864226">
+    <state x="195" y="268" key="caller.chooser.dialog" timestamp="1615937033493">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="195" y="268" key="caller.chooser.dialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1614553864226" />
+    <state x="195" y="268" key="caller.chooser.dialog/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615937033493" />
     <state x="607" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1612727808848">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="607" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1612727808848" />
-    <state x="667" y="224" width="590" height="592" key="find.popup" timestamp="1613424164527">
+    <state x="667" y="224" width="590" height="592" key="find.popup" timestamp="1616191444798">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="667" y="224" width="590" height="592" key="find.popup/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1613424164527" />
+    <state x="667" y="224" width="590" height="592" key="find.popup/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1616191444798" />
     <state x="342" y="178" key="new project wizard" timestamp="1612363526346">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -158,9 +167,9 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="616" y="240" key="run.anything.popup/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1612051368365" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1613926720336">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1615934562904">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1613926720336" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1920.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1615934562904" />
   </component>
 </project>

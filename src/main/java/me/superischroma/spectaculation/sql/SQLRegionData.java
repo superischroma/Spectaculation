@@ -54,7 +54,9 @@ public class SQLRegionData
             Location secondLocation = new Location(plugin.worldData.getWorld(set.getInt("world")), set.getInt("x2"),
                     set.getInt("y2"),
                     set.getInt("z2"));
-            RegionType type = RegionType.valueOf(set.getString("type"));
+            RegionType type = RegionType.getType(set.getString("type"));
+            if (type == null)
+                return null;
             set.close();
             return new Region(name, firstLocation, secondLocation, type);
         }

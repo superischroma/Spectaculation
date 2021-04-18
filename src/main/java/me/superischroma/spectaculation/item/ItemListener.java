@@ -1,30 +1,21 @@
 package me.superischroma.spectaculation.item;
 
-import com.google.common.util.concurrent.AtomicDouble;
 import me.superischroma.spectaculation.Spectaculation;
 import me.superischroma.spectaculation.collection.ItemCollection;
-import me.superischroma.spectaculation.enchantment.Enchantment;
-import me.superischroma.spectaculation.enchantment.EnchantmentType;
 import me.superischroma.spectaculation.entity.*;
 import me.superischroma.spectaculation.entity.caverns.CreeperFunction;
 import me.superischroma.spectaculation.event.CreeperIgniteEvent;
-import me.superischroma.spectaculation.item.accessory.AccessoryFunction;
-import me.superischroma.spectaculation.item.bow.BowFunction;
-import me.superischroma.spectaculation.item.pet.Pet;
-import me.superischroma.spectaculation.item.pet.PetAbility;
 import me.superischroma.spectaculation.item.storage.Storage;
 import me.superischroma.spectaculation.listener.PListener;
 import me.superischroma.spectaculation.potion.PotionEffect;
 import me.superischroma.spectaculation.region.Region;
 import me.superischroma.spectaculation.region.RegionType;
 import me.superischroma.spectaculation.user.*;
-import me.superischroma.spectaculation.util.SLog;
 import me.superischroma.spectaculation.util.SUtil;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -41,17 +32,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class SpecItemListener extends PListener
+public class ItemListener extends PListener
 {
-    private static final Map<UUID, CombatAction> COMBAT_MAP = new HashMap<>();
-    private static final Map<UUID, BowShooting> BOW_MAP = new HashMap<>();
-
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e)
     {
@@ -86,39 +73,8 @@ public class SpecItemListener extends PListener
             function.onInteraction(e);
     }
 
-    /*
     @EventHandler
-    public void onInventoryClose(InventoryCloseEvent e)
-    {
-        if (!(e.getPlayer() instanceof Player)) return;
-        Player player = (Player) e.getPlayer();
-        Inventory storage = Storage.getCurrentStorageOpened(player);
-        if (storage == null) return;
-        Inventory inventory = e.getInventory();
-        SItem hand = SItem.find(player.getItemInHand());
-        if (hand == null) return;
-        for (int i = 0; i < inventory.getSize(); i++)
-        {
-            SItem sItem = SItem.find(inventory.getItem(i));
-            if (sItem == null)
-            {
-                SItem equiv = SItem.of(inventory.getItem(i));
-                if (equiv != null)
-                {
-                    hand.getData().set(String.valueOf(i), equiv.toCompound());
-                    continue;
-                }
-                hand.getData().setString(String.valueOf(i), "");
-                continue;
-            }
-            hand.getData().set(String.valueOf(i), sItem.toCompound());
-        }
-        hand.update();
-        Storage.closeCurrentStorage(player);
-    }
-     */
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent e)
+    public void onInventoryClose(InventoryCloseEvent e) // todo: rework storage
     {
         if (!(e.getPlayer() instanceof Player)) return;
         Player player = (Player) e.getPlayer();
@@ -150,21 +106,6 @@ public class SpecItemListener extends PListener
     }
 
     @EventHandler
-    public void onEntityDeath(EntityDeathEvent e)
-    {
-        Entity entity = e.getEntity();
-        if (!entity.hasMetadata("specEntityObject")) return;
-        e.getDrops().clear();
-    }
-
-    @EventHandler
-    public void onArmorStandChange(PlayerArmorStandManipulateEvent e)
-    {
-        if (e.getRightClicked().hasMetadata("specUnbreakableArmorStand"))
-            e.setCancelled(true);
-    }
-
-    @EventHandler
     public void onPlayerFlight(PlayerToggleFlightEvent e)
     {
         Player player = e.getPlayer();
@@ -186,204 +127,6 @@ public class SpecItemListener extends PListener
                 }
             }
         }
-    }
-
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent e)
-    {
-        Player player = e.getPlayer();
-        if (player.getGameMode() == GameMode.CREATIVE ||
-            player.getGameMode() == GameMode.SPECTATOR)
-            return;
-        if (e.getTo().getY() > -20.0)
-            return;
-        User.getUser(player.getUniqueId()).kill(EntityDamageEvent.DamageCause.VOID, null);
-    }
-
-    @EventHandler
-    public void onPlayerDeath(EntityDamageEvent e)
-    {
-        if (!(e.getEntity() instanceof Player)) return;
-        if (e instanceof EntityDamageByEntityEvent)
-            return;
-        Player player = (Player) e.getEntity();
-        User user = User.getUser(player.getUniqueId());
-        if ((player.getHealth() + ((CraftHumanEntity) player).getHandle().getAbsorptionHearts()) - e.getDamage() <= 0.0)
-        {
-            e.setCancelled(true);
-            user.kill(e.getCause(), null);
-            return;
-        }
-        user.damage(e.getDamage(), e.getCause(), null);
-        e.setDamage(0.0);
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onEntityDamage(EntityDamageByEntityEvent e)
-    {
-        Entity damaged = e.getEntity();
-        if (damaged instanceof ArmorStand)
-        {
-            e.setCancelled(true);
-            return;
-        }
-        Entity damager = e.getDamager();
-        if (damaged instanceof LivingEntity && damager instanceof FishHook && damager.hasMetadata("owner"))
-        {
-            User.getUser(((Player) damager.getMetadata("owner").get(0).value()).getUniqueId()).damageEntity((LivingEntity) damaged);
-            return;
-        }
-        SEntity sEntity = null;
-        if (!(damager instanceof Player))
-        {
-            Entity in = damager;
-            if (in instanceof Arrow)
-            {
-                Arrow arrow = (Arrow) in;
-                ProjectileSource shooter = arrow.getShooter();
-                if (shooter instanceof Entity)
-                    in = (Entity) shooter;
-            }
-            if (in.hasMetadata("specEntityObject"))
-            {
-                List<MetadataValue> values = in.getMetadata("specEntityObject");
-                sEntity = (SEntity) values.get(0).value();
-                sEntity.getFunction().onAttack(e);
-                e.setDamage(sEntity.getStatistics().getDamageDealt());
-                try { e.setDamage(EntityDamageEvent.DamageModifier.ARMOR, 0.0); } catch (UnsupportedOperationException ignored) {}
-            }
-        }
-
-        if (damaged instanceof Player)
-        {
-            Player damagedPlayer = (Player) damaged;
-            User user = User.getUser(damagedPlayer.getUniqueId());
-            PlayerStatistics statistics = PlayerUtils.STATISTICS_CACHE.get(damagedPlayer.getUniqueId());
-            if (statistics == null) return;
-            double defense = statistics.getDefense().addAll();
-            double trueDefense = statistics.getTrueDefense().addAll();
-            if (sEntity != null && sEntity.getStatistics().dealsTrueDamage())
-                e.setDamage(e.getDamage() - (e.getDamage() * (trueDefense / (trueDefense + 100))));
-            else
-                e.setDamage(e.getDamage() - (e.getDamage() * (defense / (defense + 100))));
-            EntityDamageEvent.DamageCause cause = e.getCause();
-            if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof Entity)
-            {
-                damager = (Entity) ((Projectile) damager).getShooter();
-                cause = EntityDamageEvent.DamageCause.ENTITY_ATTACK;
-            }
-            if (damager instanceof Fireball)
-            {
-                SEntity fb = (SEntity) damager.getMetadata("dragon").get(0).value();
-                int d = SUtil.random(292, 713);
-                e.setDamage(d);
-                damagedPlayer.sendMessage(ChatColor.DARK_PURPLE + "☬ " + ChatColor.RED + fb.getStatistics().getEntityName() +
-                        ChatColor.LIGHT_PURPLE + " used " + ChatColor.YELLOW + "Fireball" +
-                        ChatColor.LIGHT_PURPLE + " on you for " + ChatColor.RED + d +
-                        " damage.");
-                damager = fb.getEntity();
-                cause = EntityDamageEvent.DamageCause.ENTITY_ATTACK;
-            }
-            Pet.PetItem item = user.getActivePet();
-            Pet pet = user.getActivePetClass();
-            if (item != null && pet != null)
-            {
-                for (PetAbility ability : pet.getPetAbilities(item.toItem()))
-                    ability.onHurt(e, damager);
-            }
-            try { e.setDamage(EntityDamageEvent.DamageModifier.ARMOR, 0.0); } catch (UnsupportedOperationException ignored) {}
-            if (damagedPlayer.getHealth() - e.getDamage() <= 0.0)
-            {
-                e.setCancelled(true);
-                User.getUser(damagedPlayer.getUniqueId()).kill(cause, damager);
-            }
-            COMBAT_MAP.put(damagedPlayer.getUniqueId(), createCombatAction(false, e.getDamage(), e.getDamager() instanceof Arrow, System.currentTimeMillis()));
-            return;
-        }
-
-        if (!(damager instanceof Player) && !(damager instanceof Arrow)) return;
-        Player player;
-        ItemStack weapon;
-        float bowForceReducer = 1.0f;
-        if (damager instanceof Arrow)
-        {
-            Arrow arrow = (Arrow) damager;
-            ProjectileSource shooter = arrow.getShooter();
-            if (!(shooter instanceof Player)) return;
-            player = (Player) shooter;
-            if (!BOW_MAP.containsKey(player.getUniqueId())) return;
-            BowShooting shooting = BOW_MAP.get(player.getUniqueId());
-            weapon = shooting.getBow();
-            bowForceReducer = shooting.getForce();
-            player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1f, 1f);
-        }
-        else
-        {
-            player = (Player) e.getDamager();
-            weapon = player.getInventory().getItemInHand();
-        }
-        PlayerUtils.DamageResult result = PlayerUtils.getDamageDealt(weapon, player, damaged, damager instanceof Arrow);
-        AtomicDouble finalDamage = new AtomicDouble(result.getFinalDamage() * bowForceReducer);
-        e.setDamage(finalDamage.get());
-        SItem sItem = SItem.find(weapon);
-        if (sItem != null)
-        {
-            if (sItem.getType().getFunction() != null)
-                sItem.getType().getFunction().onDamage(damaged, player, finalDamage, sItem);
-            if (sItem.getType().getFunction() instanceof BowFunction && e.getDamager() instanceof Arrow)
-                ((BowFunction) sItem.getType().getFunction()).onBowHit(damaged, player, (Arrow) e.getDamager(), sItem, finalDamage);
-        }
-        for (SItem accessory : PlayerUtils.getAccessories(player))
-        {
-            if (accessory.getType().getFunction() instanceof AccessoryFunction)
-                ((AccessoryFunction) accessory.getType().getFunction()).onDamageInInventory(sItem, player, damaged, accessory, finalDamage);
-        }
-        try { e.setDamage(EntityDamageEvent.DamageModifier.ARMOR, 0.0); } catch (UnsupportedOperationException ignored) {}
-        if (damaged.hasMetadata("specEntityObject"))
-        {
-            SEntity s = (SEntity) damaged.getMetadata("specEntityObject").get(0).value();
-            s.getFunction().onDamage(s, damager, e, finalDamage);
-        }
-        if (e.isCancelled())
-            return;
-        PlayerUtils.handleSpecEntity(damaged, player, finalDamage);
-
-        COMBAT_MAP.put(player.getUniqueId(), createCombatAction(true, e.getDamage(), e.getDamager() instanceof Arrow, System.currentTimeMillis()));
-
-        ArmorStand stand = (ArmorStand) new SEntity(damaged.getLocation().clone().add(SUtil.random(-1.5, 1.5), 2, SUtil.random(-1.5, 1.5)), SEntityType.UNCOLLIDABLE_ARMOR_STAND).getEntity();
-        stand.setCustomName(result.didCritDamage() ?
-                SUtil.rainbowize("✧" + ((int) e.getDamage()) + "✧") : "" + ChatColor.GRAY + (int) e.getDamage());
-        stand.setCustomNameVisible(true);
-        stand.setGravity(false);
-        stand.setVisible(false);
-        new BukkitRunnable()
-        {
-            public void run()
-            {
-                stand.remove();
-            }
-        }.runTaskLater(plugin, 30);
-    }
-
-    @EventHandler
-    public void onPotionDrink(PlayerItemConsumeEvent e)
-    {
-        SItem sItem = SItem.find(e.getItem());
-        if (sItem == null) return;
-        if (sItem.getType() != SMaterial.WATER_BOTTLE) return;
-        e.setCancelled(true);
-        List<PotionEffect> effects = sItem.getPotionEffects();
-        User user = User.getUser(e.getPlayer().getUniqueId());
-        for (PotionEffect effect : effects)
-        {
-            user.removePotionEffect(effect.getType());
-            PlayerUtils.updatePotionEffects(user, PlayerUtils.STATISTICS_CACHE.get(user.getUuid()));
-            if (effect.getType().getOnDrink() != null)
-                effect.getType().getOnDrink().accept(effect, e.getPlayer());
-            user.addPotionEffect(effect);
-        }
-        if (e.getPlayer().getGameMode() != GameMode.CREATIVE && e.getPlayer().getGameMode() != GameMode.SPECTATOR)
-            e.getPlayer().setItemInHand(SItem.of(SMaterial.GLASS_BOTTLE).getStack());
     }
 
     @EventHandler
@@ -417,16 +160,6 @@ public class SpecItemListener extends PListener
         updateStatistics((Player) e.getWhoClicked());
     }
 
-    @EventHandler
-    public void onCreeperIgnite(CreeperIgniteEvent e)
-    {
-        Creeper creeper = e.getEntity();
-        if (!creeper.hasMetadata("specEntityObject")) return;
-        SEntity sEntity = (SEntity) creeper.getMetadata("specEntityObject").get(0).value();
-        if (sEntity.getFunction() instanceof CreeperFunction)
-            ((CreeperFunction) sEntity.getFunction()).onCreeperIgnite(e, sEntity);
-    }
-
     @EventHandler(priority = EventPriority.HIGH)
     public void onItemClick(InventoryClickEvent e)
     {
@@ -445,56 +178,6 @@ public class SpecItemListener extends PListener
         if (e.getClickedInventory().getType() != InventoryType.PLAYER) return;
         if (e.getSlot() != 8) return;
         e.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onBowShoot(EntityShootBowEvent e)
-    {
-        if (!(e.getEntity() instanceof Player)) return;
-        BOW_MAP.put(e.getEntity().getUniqueId(), new BowShooting()
-        {
-            @Override
-            public ItemStack getBow()
-            {
-                return e.getBow();
-            }
-            @Override
-            public float getForce()
-            {
-                return e.getForce();
-            }
-        });
-        User user = User.getUser(e.getEntity().getUniqueId());
-        Player player = (Player) e.getEntity();
-        SItem arrows = SItem.find(player.getInventory().getItem(8));
-        if (arrows != null && arrows.getType() == SMaterial.QUIVER_ARROW)
-        {
-            int save = arrows.getStack().getAmount();
-            new BukkitRunnable()
-            {
-                public void run()
-                {
-                    ItemStack last = player.getInventory().getItem(8);
-                    if (last == null)
-                    {
-                        user.subFromQuiver(SMaterial.ARROW);
-                        player.getInventory().setItem(8, SItem.of(SMaterial.SKYBLOCK_MENU).getStack());
-                        return;
-                    }
-                    if (save == last.getAmount()) return;
-                    user.subFromQuiver(SMaterial.ARROW);
-                    player.getInventory().setItem(8, SUtil.setStackAmount(SItem.of(SMaterial.QUIVER_ARROW).getStack(), Math.min(64, user.getQuiver(SMaterial.ARROW))));
-                }
-            }.runTaskLater(Spectaculation.getPlugin(), 1);
-        }
-        SItem sItem = SItem.find(e.getBow());
-        if (sItem != null)
-        {
-            Enchantment aiming = sItem.getEnchantment(EnchantmentType.AIMING);
-            SUtil.markAimingArrow((Projectile) e.getProjectile(), aiming);
-            if (sItem.getType().getFunction() instanceof BowFunction)
-                ((BowFunction) sItem.getType().getFunction()).onBowShoot(sItem, e);
-        }
     }
 
     @EventHandler
@@ -617,7 +300,7 @@ public class SpecItemListener extends PListener
                     SEntity entity = new SEntity(block.getLocation().clone().add(0, 53, 0), dragonType);
                     for (Player p : Bukkit.getOnlinePlayers())
                     {
-                        Region area = Region.getAreaOfEntity(p);
+                        Region area = Region.getRegionOfEntity(p);
                         if (area == null) continue;
                         if (area.getType() != RegionType.DRAGONS_NEST) continue;
                         Vector vector = p.getLocation().clone().subtract(new Vector(-670.5, 58.0, -275.5)).toVector();
@@ -628,19 +311,8 @@ public class SpecItemListener extends PListener
                     Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "☬ " + ChatColor.LIGHT_PURPLE + ChatColor.BOLD +
                             "The " + ChatColor.RED + ChatColor.BOLD + entity.getStatistics().getEntityName() +
                             ChatColor.LIGHT_PURPLE + ChatColor.BOLD + " has spawned!");
-                    /*
-                    new Thread(() ->
-                    {
-                        LivingEntity le = entity.getEntity();
-                        for (Entity e : le.getNearbyEntities(200, 200, 200))
-                            e.setVelocity(le.getLocation().toVector().multiply(-1.0).setY(50.0));
-                    }).start();
-
-                     */
                 }
             }.runTaskLater(plugin, 180);
-            // TODO: DRAGON WILL SPAWN 53 BLOCKS UP FROM PORTAL
-            // TODO: END ALTAR LOCATION: -660 -275
             return;
         }
         List<MetadataValue> values = block.getMetadata("placer");
@@ -666,45 +338,6 @@ public class SpecItemListener extends PListener
             StaticDragonManager.EYES.get(p.getUniqueId()).remove(block.getLocation());
             player.sendMessage(ChatColor.DARK_PURPLE + "You recovered a Summoning Eye!");
             return;
-        }
-    }
-
-    @EventHandler
-    public void onProjectileHit(ProjectileHitEvent e)
-    {
-        if (e.getEntity() instanceof Arrow)
-        {
-            new BukkitRunnable()
-            {
-                public void run()
-                {
-                    e.getEntity().remove();
-                }
-            }.runTaskLater(Spectaculation.getPlugin(), 10);
-            return;
-        }
-        if (e.getEntity() instanceof Fireball && (e.getEntity().hasMetadata("dragon") || e.getEntity().hasMetadata("magma")))
-        {
-            String type = e.getEntity().hasMetadata("dragon") ? "dragon" : "magma";
-            SEntity sEntity = (SEntity) e.getEntity().getMetadata(type).get(0).value();
-            e.getEntity().getWorld().playEffect(e.getEntity().getLocation(), Effect.EXPLOSION_HUGE, Effect.EXPLOSION_HUGE.getData());
-            e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.EXPLODE, 5f, 0f);
-            for (Entity entity : e.getEntity().getNearbyEntities(2, 2, 2))
-            {
-                if (!(entity instanceof LivingEntity)) continue;
-                int d = type.equals("dragon") ? SUtil.random(292, 713) : 125;
-                if (entity instanceof Player)
-                    User.getUser(entity.getUniqueId()).damage(d, EntityDamageEvent.DamageCause.ENTITY_ATTACK, sEntity.getEntity());
-                else
-                    ((LivingEntity) entity).damage(d);
-                if (type.equals("dragon"))
-                {
-                    entity.sendMessage(ChatColor.DARK_PURPLE + "☬ " + ChatColor.RED + sEntity.getStatistics().getEntityName() +
-                            ChatColor.LIGHT_PURPLE + " used " + ChatColor.YELLOW + "Fireball" +
-                            ChatColor.LIGHT_PURPLE + " on you for " + ChatColor.RED + d +
-                            " damage.");
-                }
-            }
         }
     }
 
@@ -778,6 +411,38 @@ public class SpecItemListener extends PListener
             ((FishingRodFunction) function).onFish(rod, e);
     }
 
+    @EventHandler
+    public void onPotionSplash(PotionSplashEvent e)
+    {
+        SItem item = SItem.find(e.getPotion().getItem());
+        if (item == null) return;
+        if (!item.isPotion()) return;
+        e.setCancelled(true);
+        for (LivingEntity entity : e.getAffectedEntities())
+        {
+            if (!(entity instanceof Player)) continue;
+            User user = User.getUser(entity.getUniqueId());
+            if (user == null) continue;
+            for (PotionEffect effect : item.getPotionEffects())
+            {
+                PlayerUtils.updatePotionEffects(user, PlayerUtils.STATISTICS_CACHE.get(user.getUuid()));
+                if (effect.getType().getOnDrink() != null)
+                    effect.getType().getOnDrink().accept(effect, (Player) entity);
+                long ticks = (long) (effect.getDuration() * e.getIntensity(entity));
+                if ((!user.hasPotionEffect(effect.getType())) || (user.hasPotionEffect(effect.getType()) &&
+                        ticks > user.getPotionEffect(effect.getType()).getRemaining()))
+                {
+                    user.removePotionEffect(effect.getType());
+                    user.addPotionEffect(new PotionEffect(effect.getType(), effect.getLevel(), ticks));
+                }
+                entity.sendMessage((effect.getType().isBuff() ? ChatColor.GREEN + "" + ChatColor.BOLD + "BUFF!" :
+                        ChatColor.RED + "" + ChatColor.BOLD + "DEBUFF!") +
+                        ChatColor.RESET + ChatColor.WHITE + " You " + (e.getPotion().getShooter().equals(entity) ? "splashed yourself" : "were splashed") +
+                        " with " + effect.getDisplayName() + ChatColor.WHITE + "!");
+            }
+        }
+    }
+
     private static void updateStatistics(Player player)
     {
         PlayerInventory inv = player.getInventory();
@@ -808,59 +473,9 @@ public class SpecItemListener extends PListener
                     PlayerUtils.updateArmorStatistics((leggings = SItem.find(afterLeggings)), statistics, PlayerStatistic.LEGGINGS);
                 if (!bootsSimilar)
                     PlayerUtils.updateArmorStatistics((boots = SItem.find(afterBoots)), statistics, PlayerStatistic.BOOTS);
-                /*
-                List<SItem> items = Arrays.asList(helmet, chestplate, leggings, boots);
-                boolean flight = false;
-                for (SItem sItem : items)
-                {
-                    if (sItem == null) continue;
-                    if (sItem.getSpecMaterial().getStatistics() instanceof FlightStatistics)
-                    {
-                        if (((FlightStatistics) sItem.getSpecMaterial().getStatistics()).enableFlight())
-                            flight = true;
-                    }
-                }
-                SUtil.toggleAllowFlightNoCreative(statistics.getUuid(), flight);
-
-                 */
                 PlayerUtils.updateInventoryStatistics(player, statistics);
             }
         }.runTaskLater(Spectaculation.getPlugin(), 1);
-    }
-
-    public static CombatAction getLastCombatAction(Player player)
-    {
-        return COMBAT_MAP.get(player.getUniqueId());
-    }
-
-    private static CombatAction createCombatAction(boolean attacked, double damage, boolean bowShot, long timestamp)
-    {
-        return new CombatAction()
-        {
-            @Override
-            public boolean attacked()
-            {
-                return attacked;
-            }
-
-            @Override
-            public double getDamageDealt()
-            {
-                return damage;
-            }
-
-            @Override
-            public boolean isBowShot()
-            {
-                return bowShot;
-            }
-
-            @Override
-            public long getTimeStamp()
-            {
-                return timestamp;
-            }
-        };
     }
 
     private static boolean similar(ItemStack is, ItemStack is1)
@@ -877,17 +492,4 @@ public class SpecItemListener extends PListener
         return is.getType() == Material.AIR;
     }
 
-    private interface BowShooting
-    {
-        ItemStack getBow();
-        float getForce();
-    }
-
-    public interface CombatAction
-    {
-        boolean attacked();
-        double getDamageDealt();
-        boolean isBowShot();
-        long getTimeStamp();
-    }
 }

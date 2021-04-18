@@ -3,7 +3,7 @@ package me.superischroma.spectaculation.slayer;
 import com.google.common.util.concurrent.AtomicDouble;
 import lombok.Getter;
 import lombok.Setter;
-import me.superischroma.spectaculation.SoundSequenceType;
+import me.superischroma.spectaculation.sequence.SoundSequenceType;
 import me.superischroma.spectaculation.Spectaculation;
 import me.superischroma.spectaculation.entity.SEntity;
 import me.superischroma.spectaculation.entity.SEntityType;

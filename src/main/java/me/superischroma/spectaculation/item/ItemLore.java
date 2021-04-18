@@ -189,7 +189,7 @@ public class ItemLore
         StringBuilder builder = new StringBuilder();
         builder.append(ChatColor.GRAY).append(name).append(": ")
                 .append(green ? ChatColor.GREEN : ChatColor.RED)
-                .append(i < 0 ? "" : "+").append(i).append(succeeding);
+                .append(i < 0 ? "" : "+").append(Math.round(i)).append(succeeding);
         if (r != 0)
         {
             builder.append(ChatColor.BLUE).append(" (").append(parent.getReforge().getName()).append(" ")

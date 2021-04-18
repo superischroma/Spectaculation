@@ -1,9 +1,6 @@
 package me.superischroma.spectaculation.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * A page-based ArrayList
@@ -14,6 +11,12 @@ import java.util.List;
 public class PaginationList<T> extends ArrayList<T>
 {
     private int elementsPerPage;
+
+    public PaginationList(Collection<T> collection, int elementsPerPage)
+    {
+        super(collection);
+        this.elementsPerPage = elementsPerPage;
+    }
 
     /**
      * Defines a new Pagination List.

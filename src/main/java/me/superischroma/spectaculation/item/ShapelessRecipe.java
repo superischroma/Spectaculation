@@ -1,6 +1,7 @@
 package me.superischroma.spectaculation.item;
 
 import lombok.Getter;
+import me.superischroma.spectaculation.util.SLog;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.inventory.ItemStack;
 
@@ -59,6 +60,11 @@ public class ShapelessRecipe extends Recipe<ShapelessRecipe>
         return ingredientList;
     }
 
+    public String toString()
+    {
+        return "ShapelessRecipe{" + ingredientList.toString() + "}";
+    }
+
     protected static ShapelessRecipe parseShapelessRecipe(ItemStack[] stacks)
     {
         if (stacks.length != 9)
@@ -75,9 +81,10 @@ public class ShapelessRecipe extends Recipe<ShapelessRecipe>
             if (materials.length != ingredients.size())
                 continue;
             boolean found = true;
+            MaterialQuantifiable[] copy = Arrays.copyOf(materials, materials.length);
             for (MaterialQuantifiable ingredient : ingredients)
             {
-                if (!contains(recipe.useExchangeables, materials, ingredient))
+                if (!contains(recipe.useExchangeables, copy, ingredient))
                 {
                     found = false;
                     break;
@@ -92,12 +99,21 @@ public class ShapelessRecipe extends Recipe<ShapelessRecipe>
     private static boolean contains(boolean usesExchangeables, MaterialQuantifiable[] grid, MaterialQuantifiable test)
     {
         List<SMaterial> exchangeables = getExchangeablesOf(test.getMaterial());
-        for (MaterialQuantifiable material : grid)
+        for (int i = 0; i < grid.length; i++)
         {
+            MaterialQuantifiable material = grid[i];
+            if (material == null)
+                continue;
             if (usesExchangeables && exchangeables != null && exchangeables.contains(material.getMaterial()) && material.getAmount() >= test.getAmount())
+            {
+                grid[i] = null;
                 return true;
+            }
             if (material.getMaterial() == test.getMaterial() && material.getAmount() >= test.getAmount())
+            {
+                grid[i] = null;
                 return true;
+            }
         }
         return false;
     }

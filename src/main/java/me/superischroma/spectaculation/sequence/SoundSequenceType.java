@@ -1,4 +1,4 @@
-package me.superischroma.spectaculation;
+package me.superischroma.spectaculation.sequence;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;

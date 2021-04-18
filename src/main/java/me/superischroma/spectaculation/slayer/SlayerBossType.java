@@ -284,4 +284,16 @@ public class SlayerBossType
         }
     }
 
+    @Getter
+    private static class SlayerAbility
+    {
+        private final String name;
+        private final String[] description;
+
+        public SlayerAbility(String name, String... description)
+        {
+            this.name = name;
+            this.description = description;
+        }
+    }
 }

@@ -1,18 +1,17 @@
 package me.superischroma.spectaculation.item.bow;
 
 import com.google.common.util.concurrent.AtomicDouble;
+import me.superischroma.spectaculation.util.DefenseReplacement;
 import me.superischroma.spectaculation.Repeater;
 import me.superischroma.spectaculation.Spectaculation;
 import me.superischroma.spectaculation.item.*;
 import me.superischroma.spectaculation.user.PlayerUtils;
-import me.superischroma.spectaculation.util.SLog;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -110,7 +109,7 @@ public class MosquitoBow implements ToolStatistics, BowFunction, Ability
             return;
         }
         long c = System.currentTimeMillis();
-        Repeater.DEFENSE_REPLACEMENT_MAP.put(player.getUniqueId(), new Repeater.DefenseReplacement()
+        Repeater.DEFENSE_REPLACEMENT_MAP.put(player.getUniqueId(), new DefenseReplacement()
         {
             @Override
             public String getReplacement()

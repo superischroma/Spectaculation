@@ -1,6 +1,7 @@
 package me.superischroma.spectaculation.user;
 
 import com.google.common.util.concurrent.AtomicDouble;
+import me.superischroma.spectaculation.util.DefenseReplacement;
 import me.superischroma.spectaculation.Repeater;
 import me.superischroma.spectaculation.Spectaculation;
 import me.superischroma.spectaculation.config.Config;
@@ -20,7 +21,6 @@ import me.superischroma.spectaculation.skill.Skill;
 import me.superischroma.spectaculation.slayer.SlayerQuest;
 import me.superischroma.spectaculation.util.BlankWorldCreator;
 import me.superischroma.spectaculation.util.Groups;
-import me.superischroma.spectaculation.util.SLog;
 import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -432,7 +432,7 @@ public final class PlayerUtils
                         if (ability.displayUsage())
                         {
                             long c = System.currentTimeMillis();
-                            Repeater.DEFENSE_REPLACEMENT_MAP.put(player.getUniqueId(), new Repeater.DefenseReplacement()
+                            Repeater.DEFENSE_REPLACEMENT_MAP.put(player.getUniqueId(), new DefenseReplacement()
                             {
                                 @Override
                                 public String getReplacement()
@@ -477,6 +477,7 @@ public final class PlayerUtils
 
     public static void updateHealth(Player player, PlayerStatistics statistics)
     {
+        if (player == null) return;
         boolean fill = player.getHealth() == player.getMaxHealth();
         player.setMaxHealth(statistics.getMaxHealth().addAll());
         if (fill)
@@ -569,10 +570,9 @@ public final class PlayerUtils
 
     public static void handleSpecEntity(Entity entity, Player damager, AtomicDouble finalDamage)
     {
-        if (entity.hasMetadata("specEntityObject"))
+        SEntity sEntity = SEntity.findSEntity(entity);
+        if (sEntity != null)
         {
-            List<MetadataValue> values = entity.getMetadata("specEntityObject");
-            SEntity sEntity = (SEntity) values.get(0).value();
             EntityFunction function = sEntity.getFunction();
             if (damager != null)
                 sEntity.addDamageFor(damager, finalDamage.get());
@@ -612,7 +612,7 @@ public final class PlayerUtils
                 {
                     EntityDropType type = drop.getType();
                     double r = SUtil.random(0.0, 1.0);
-                    double magicFind = STATISTICS_CACHE.get(damager.getUniqueId()).getMagicFind().addAll();
+                    double magicFind = STATISTICS_CACHE.get(damager.getUniqueId()).getMagicFind().addAll() / 100.0;
                     double c = drop.getDropChance() + magicFind;
                     if (r > c) continue;
                     if (rare && type != EntityDropType.GUARANTEED) continue;
@@ -642,7 +642,7 @@ public final class PlayerUtils
                         damager.sendMessage(type.getColor() + "" + ChatColor.BOLD +
                                 (type == EntityDropType.CRAZY_RARE ? "CRAZY " : "") + "RARE DROP!  " +
                                 ChatColor.GRAY + "(" + name + ChatColor.GRAY + ")" + (magicFind != 0.0 ? ChatColor.AQUA +
-                                " (+" + (int) (magicFind * 100) + "% Magic Find!)" : ""));
+                                " (+" + (int) (magicFind * 10000) + "% Magic Find!)" : ""));
                     }
                     if (drop.getOwner() == null)
                         entity.getWorld().dropItem(entity.getLocation(), stack);

@@ -17,10 +17,11 @@ import com.sk89q.worldedit.world.registry.WorldData;
 import me.superischroma.spectaculation.Spectaculation;
 import me.superischroma.spectaculation.enchantment.Enchantment;
 import me.superischroma.spectaculation.gui.GUI;
-import me.superischroma.spectaculation.item.GenericItemType;
-import me.superischroma.spectaculation.item.SItem;
-import me.superischroma.spectaculation.item.SMaterial;
+import me.superischroma.spectaculation.item.*;
+import me.superischroma.spectaculation.potion.PotionColor;
+import me.superischroma.spectaculation.potion.PotionEffect;
 import net.minecraft.server.v1_8_R3.*;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -33,6 +34,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.NPC;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -389,7 +391,7 @@ public class SUtil
 
     public static SItem setSItemAmount(SItem item, int amount)
     {
-        item.setAmount(amount);
+        item.getStack().setAmount(amount);
         return item;
     }
 
@@ -487,6 +489,7 @@ public class SUtil
             meta.setDisplayName(name);
         stack.setAmount(amount);
         meta.setLore(lore);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
         stack.setItemMeta(meta);
         return stack;
     }
@@ -669,9 +672,8 @@ public class SUtil
         return o;
     }
 
-    public static NBTBase getBaseFromObject(ConfigurationSection cs, String key)
+    public static NBTBase getBaseFromObject(Object o)
     {
-        Object o = cs.get(key);
         if (o instanceof Byte)
             return new NBTTagByte((byte) o);
         else if (o instanceof Short)
@@ -687,6 +689,11 @@ public class SUtil
         else if (o instanceof String)
             return new NBTTagString((String) o);
         return null;
+    }
+
+    public static NBTBase getBaseFromObject(ConfigurationSection cs, String key)
+    {
+        return getBaseFromObject(cs.get(key));
     }
 
     public static ChatColor getRandomVisibleColor()
@@ -739,9 +746,7 @@ public class SUtil
             gzipOS.close();
             result = bos.toByteArray();
         }
-        catch (IOException e)
-        {
-        }
+        catch (IOException ignored) {}
         return result;
     }
 
@@ -761,9 +766,7 @@ public class SUtil
             }
             result = bos.toByteArray();
         }
-        catch (IOException e)
-        {
-        }
+        catch (IOException ignored) {}
         return result;
     }
 
@@ -998,8 +1001,148 @@ public class SUtil
         return array;
     }
 
+    public static Rarity findPotionRarity(int level)
+    {
+        switch (level)
+        {
+            case 0:
+            case 1:
+            case 2:
+                return Rarity.COMMON;
+            case 3:
+            case 4:
+                return Rarity.UNCOMMON;
+            case 5:
+            case 6:
+                return Rarity.RARE;
+            case 7:
+            case 8:
+                return Rarity.EPIC;
+            case 9:
+            case 10:
+                return Rarity.LEGENDARY;
+            case 11:
+            case 12:
+                return Rarity.MYTHIC;
+            case 13:
+            case 14:
+                return Rarity.SUPREME;
+            case 15:
+            case 16:
+                return Rarity.SPECIAL;
+            default:
+                return Rarity.VERY_SPECIAL;
+        }
+    }
+
+    public static PotionColor getTopColor(SItem item)
+    {
+        if (!item.isPotion()) return null;
+        int topLevel = 0;
+        PotionColor color = null;
+        for (PotionEffect effect : item.getPotionEffects())
+        {
+            if (effect.getLevel() > topLevel)
+            {
+                topLevel = effect.getLevel();
+                color = effect.getType().getColor();
+            }
+        }
+        return color;
+    }
+
+    public static boolean canFitStack(Inventory inventory, ItemStack fit)
+    {
+        for (ItemStack stack : inventory)
+        {
+            if (stack == null)
+                continue;
+            if (!fit.equals(stack))
+                continue;
+            if (stack.getAmount() + fit.getAmount() > 64)
+                continue;
+            return true;
+        }
+        return false;
+    }
+
     public static int blackMagic(double d)
     {
         return ((Double) d).intValue();
+    }
+
+    public static String prettify(Object obj)
+    {
+        Class<?> clazz = obj.getClass();
+        if (clazz == Location.class)
+        {
+            Location location = (Location) obj;
+            return location.getX() + ", " + location.getY() + ", " + location.getZ() + ", " + location.getWorld().getName() + ", " +
+                    location.getYaw() + ", " + location.getPitch();
+        }
+        return "No pretty!";
+    }
+
+    public static String toNormalCase(String string)
+    {
+        string = string.replaceAll("_", " ");
+        String[] spl = string.split(" ");
+        for (int i = 0; i < spl.length; i++)
+        {
+            String s = spl[i];
+            if (s.length() == 0)
+                continue;
+            if (s.length() == 1)
+            {
+                spl[i] = s.toUpperCase();
+                continue;
+            }
+            spl[i] = s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+        }
+        return StringUtils.join(spl, " ");
+    }
+
+    public static String getAuctionFormattedTime(long millis)
+    {
+        if (millis == 0)
+            return "Ended!";
+        if (millis >= 8.64E7)
+            return Math.round(millis / 8.64E7) + "d";
+        if (millis >= 2.16E7)
+            return Math.round(millis / 3.6E6) + "h";
+        long seconds = millis / 1000; // 86400
+        long hours = seconds / 3600; // 24
+        seconds -= hours * 3600; // 86400 - 84600 = 0
+        long minutes = seconds / 60; // 0
+        seconds -= minutes * 60; // 59 * 60 = 3540
+        StringBuilder builder = new StringBuilder();
+        if (hours > 0)
+            builder.append(hours).append("h ");
+        builder.append(minutes).append("m ").append(seconds).append("s");
+        return builder.toString();
+    }
+
+    public static String getAuctionSetupFormattedTime(long millis)
+    {
+        String dur;
+        if (millis >= 8.64E7)
+        {
+            long days = Math.round(millis / 8.64E7);
+            dur = days + " Day";
+            if (days != 1) dur += "s";
+        }
+        else if (millis >= 3600000)
+        {
+            long hours = Math.round(millis / 3600000.0);
+            dur = hours + " Hour";
+            if (hours != 1) dur += "s";
+        }
+        else
+        {
+            long minutes = Math.round(millis / 60000.0);
+            dur = minutes + " Minute";
+            if (minutes != 1) dur += "s";
+        }
+        return dur;
     }
 }

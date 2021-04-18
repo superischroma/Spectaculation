@@ -54,6 +54,7 @@ import me.superischroma.spectaculation.item.mining.*;
 import me.superischroma.spectaculation.item.oddities.*;
 import me.superischroma.spectaculation.item.orb.*;
 import me.superischroma.spectaculation.item.pet.EndermanPet;
+import me.superischroma.spectaculation.item.pet.GungaPet;
 import me.superischroma.spectaculation.item.pickaxe.vanilla.*;
 import me.superischroma.spectaculation.item.revenant.*;
 import me.superischroma.spectaculation.item.rune.*;
@@ -175,6 +176,8 @@ public enum SMaterial
     ENCHANTED_JUNGLE_WOOD(Material.LOG, EnchantedJungleWood.class, (short) 3),
     ENCHANTED_ACACIA_WOOD(Material.LOG_2, EnchantedAcaciaWood.class),
     ENCHANTED_DARK_OAK_WOOD(Material.LOG_2, EnchantedDarkOakWood.class, (short) 1),
+    ENCHANTED_POTATO(Material.POTATO_ITEM, EnchantedPotato.class),
+    ENCHANTED_BAKED_POTATO(Material.BAKED_POTATO, EnchantedPotato.class),
     // Bows
     END_STONE_BOW(Material.BOW, EndStoneBow.class),
     MOSQUITO_BOW(Material.BOW, MosquitoBow.class),
@@ -240,6 +243,7 @@ public enum SMaterial
     COUTURE_RUNE(Material.SKULL_ITEM, CoutureRune.class),
     // Pets
     ENDERMAN_PET(Material.SKULL_ITEM, EndermanPet.class),
+    GUNGA_PET(Material.SKULL_ITEM, GungaPet.class),
     // Craft Materials
     AIR(Material.AIR),
     STONE(Material.STONE, Stone.class, true),

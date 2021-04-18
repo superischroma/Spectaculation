@@ -47,6 +47,8 @@ public class GUIListener extends PListener
                 }
             }
         }
+        else
+            gui.onBottomClick(e);
         gui.update(e.getView().getTopInventory());
     }
 

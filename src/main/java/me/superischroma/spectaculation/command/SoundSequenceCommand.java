@@ -1,8 +1,7 @@
 package me.superischroma.spectaculation.command;
 
-import me.superischroma.spectaculation.SoundSequenceType;
+import me.superischroma.spectaculation.sequence.SoundSequenceType;
 import org.bukkit.ChatColor;
-import org.bukkit.Sound;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 

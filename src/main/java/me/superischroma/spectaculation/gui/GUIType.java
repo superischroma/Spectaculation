@@ -21,7 +21,15 @@ public enum GUIType
     SVEN_PACKMASTER(SvenPackmasterGUI.class),
     COLLECTION_MENU(CollectionMenuGUI.class),
     SKILL_MENU(SkillMenuGUI.class),
-    PETS(PetsGUI.class);
+    PETS(PetsGUI.class),
+    FARM_MERCHANT(FarmMerchantGUI.class),
+    ACTIVE_EFFECTS(ActiveEffectsGUI.class),
+    AUCTION_HOUSE(AuctionHouseGUI.class),
+    AUCTIONS_BROWSER(AuctionsBrowserGUI.class),
+    CREATE_AUCTION(CreateAuctionGUI.class),
+    AUCTION_CONFIRM(AuctionConfirmGUI.class),
+    MANAGE_AUCTIONS(ManageAuctionsGUI.class),
+    YOUR_BIDS(YourBidsGUI.class),
     ;
 
     private final Class<? extends GUI> gui;

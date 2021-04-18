@@ -7,6 +7,7 @@ import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -15,11 +16,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CraftingTableGUI extends GUI implements BlockBasedGUI
 {
     private static final ItemStack RECIPE_REQUIRED = SUtil.createNamedItemStack(Material.BARRIER, ChatColor.RED + "Recipe Required");
     private static final int[] CRAFT_SLOTS = new int[]{10, 11, 12, 19, 20, 21, 28, 29, 30};
+    private static final int RESULT_SLOT = 24;
 
     public CraftingTableGUI()
     {
@@ -32,11 +36,29 @@ public class CraftingTableGUI extends GUI implements BlockBasedGUI
             @Override
             public void run(InventoryClickEvent e)
             {
+                boolean shift = e.isShiftClick();
                 Inventory inventory = e.getClickedInventory();
                 if (e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.BARRIER || e.getCurrentItem().getType() == Material.AIR)
-                {
-                    e.setCancelled(true);
                     return;
+                ItemStack result = inventory.getItem(RESULT_SLOT);
+                if (result == null || result.getType() == Material.AIR)
+                    return;
+                SItem item = SItem.find(result);
+                if (!shift)
+                {
+                    if (e.getCursor() != null && e.getCursor().getType() != Material.AIR)
+                    {
+                        SItem cursor = SItem.find(e.getCursor());
+                        if (cursor == null)
+                            cursor = SItem.convert(e.getCursor());
+                        if (!item.equals(cursor))
+                            return;
+                        if (e.getCursor().getAmount() + result.getAmount() > 64)
+                            return;
+                        e.getCursor().setAmount(e.getCursor().getAmount() + result.getAmount());
+                    }
+                    else
+                        e.getWhoClicked().setItemOnCursor(result);
                 }
                 Recipe<?> recipe = Recipe.parseRecipe(getCurrentRecipe(inventory));
                 if (recipe == null) return;
@@ -44,7 +66,8 @@ public class CraftingTableGUI extends GUI implements BlockBasedGUI
                 List<MaterialQuantifiable> materials = new ArrayList<>(ingredients.size());
                 for (MaterialQuantifiable ingredient : ingredients)
                     materials.add(ingredient.clone());
-                SUtil.delay(() ->
+                int max = Integer.MAX_VALUE;
+                if (shift)
                 {
                     for (int slot : CRAFT_SLOTS)
                     {
@@ -53,17 +76,36 @@ public class CraftingTableGUI extends GUI implements BlockBasedGUI
                         if (ind == -1)
                             continue;
                         MaterialQuantifiable material = materials.get(ind);
-                        int remaining = stack.getAmount() - material.getAmount();
-                        materials.remove(ind);
-                        if (remaining <= 0)
-                        {
-                            inventory.setItem(slot, new ItemStack(Material.AIR));
-                            continue;
-                        }
-                        material.setAmount(remaining);
-                        stack.setAmount(remaining);
+                        int m = stack.getAmount() / material.getAmount();
+                        if (m < max)
+                            max = m;
                     }
-                }, 1);
+                }
+                for (int slot : CRAFT_SLOTS)
+                {
+                    ItemStack stack = inventory.getItem(slot);
+                    int ind = indexOf(recipe, materials, MaterialQuantifiable.of(stack));
+                    if (ind == -1)
+                        continue;
+                    MaterialQuantifiable material = materials.get(ind);
+                    int remaining = stack.getAmount() - material.getAmount();
+                    if (shift)
+                        remaining = stack.getAmount() - (material.getAmount() * max);
+                    materials.remove(ind);
+                    if (remaining <= 0)
+                    {
+                        inventory.setItem(slot, new ItemStack(Material.AIR));
+                        continue;
+                    }
+                    material.setAmount(remaining);
+                    stack.setAmount(remaining);
+                }
+                if (shift)
+                {
+                    Map<Integer, ItemStack> back = e.getWhoClicked().getInventory().addItem(SUtil.setStackAmount(result, result.getAmount() * max));
+                    for (ItemStack stack : back.values())
+                        e.getWhoClicked().getWorld().dropItem(e.getWhoClicked().getLocation(), stack).setVelocity(e.getWhoClicked().getLocation().getDirection());
+                }
                 update(inventory);
             }
             @Override
@@ -79,7 +121,7 @@ public class CraftingTableGUI extends GUI implements BlockBasedGUI
             @Override
             public boolean canPickup()
             {
-                return true;
+                return false;
             }
         });
         this.set(GUIClickableItem.getCloseItem(49));

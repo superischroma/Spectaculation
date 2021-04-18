@@ -5,7 +5,6 @@ import me.superischroma.spectaculation.util.SUtil;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.ChatColor;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

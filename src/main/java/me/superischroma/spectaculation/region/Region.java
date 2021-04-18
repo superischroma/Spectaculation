@@ -61,12 +61,11 @@ public class Region
         return players;
     }
 
-    public static Region getAreaOfEntity(Entity entity)
+    public static Region getRegionOfEntity(Entity entity)
     {
         List<Region> possible = new ArrayList<>();
         for (Region region : getRegions())
         {
-            if (!region.getType().isArea()) continue;
             if (region.insideRegion(entity))
                 possible.add(region);
         }
@@ -75,11 +74,10 @@ public class Region
         return possible.size() != 0 ? possible.get(0) : null;
     }
 
-    public static Region getRegionOfEntity(Entity entity)
+    public static Region getQuickRegionOfEntity(Entity entity)
     {
         for (Region region : getRegions())
         {
-            if (region.getType().isArea()) continue;
             if (region.insideRegion(entity))
                 return region;
         }

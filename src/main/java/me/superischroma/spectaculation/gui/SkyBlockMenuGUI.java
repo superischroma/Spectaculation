@@ -144,6 +144,36 @@ public class SkyBlockMenuGUI extends GUI
                         ChatColor.YELLOW + "Click to open!");
             }
         });
+        if (user.getEffects().size() > 0)
+        {
+            set(new GUIClickableItem()
+            {
+                @Override
+                public void run(InventoryClickEvent e)
+                {
+                    GUIType.ACTIVE_EFFECTS.getGUI().open(player);
+                }
+
+                @Override
+                public int getSlot()
+                {
+                    return 29;
+                }
+
+                @Override
+                public ItemStack getItem()
+                {
+                    return SUtil.getStack(ChatColor.GREEN + "Active Effects", Material.POTION, (short) 0, 1,
+                            ChatColor.GRAY + "View and manage all of your",
+                            ChatColor.GRAY + "active potion effects.",
+                            " ",
+                            ChatColor.GRAY + "Drink Potions or splash them",
+                            ChatColor.GRAY + "on the ground to buff yourself!",
+                            " ",
+                            ChatColor.GRAY + "Currently Active: " + ChatColor.YELLOW + user.getEffects().size());
+                }
+            });
+        }
         if (user.getPets().size() > 0)
         {
             Pet.PetItem active = user.getActivePet();

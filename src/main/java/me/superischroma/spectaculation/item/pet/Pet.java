@@ -208,14 +208,16 @@ public abstract class Pet implements SkullStatistics, LoreableMaterialStatistics
 
     private static void addPropertyInt(String name, double value, List<String> lore, int level)
     {
-        if (value > 0.0)
-            lore.add(ChatColor.GRAY + name + ": " + ChatColor.GREEN + "+" + Math.round(value * level));
+        long fin = Math.round(value * level);
+        if (value != 0.0)
+            lore.add(ChatColor.GRAY + name + ": " + ChatColor.GREEN + (fin >= 0 ? "+" : "") + fin);
     }
 
     private static void addPropertyPercent(String name, double value, List<String> lore, int level)
     {
-        if (value > 0.0)
-            lore.add(ChatColor.GRAY + name + ": " + ChatColor.GREEN + "+" + Math.round((value * 100.0) * level) + "%");
+        long fin = Math.round((value * 100.0) * level);
+        if (value != 0.0)
+            lore.add(ChatColor.GRAY + name + ": " + ChatColor.GREEN + (fin >= 0 ? "+" : "") + fin + "%");
     }
 
     public double getPerHealth()

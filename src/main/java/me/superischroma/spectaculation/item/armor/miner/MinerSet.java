@@ -2,15 +2,11 @@ package me.superischroma.spectaculation.item.armor.miner;
 
 import me.superischroma.spectaculation.item.MaterialStatistics;
 import me.superischroma.spectaculation.item.SItem;
-import me.superischroma.spectaculation.item.SMaterial;
-import me.superischroma.spectaculation.item.SpecItemListener;
-import me.superischroma.spectaculation.item.armor.ArmorSet;
 import me.superischroma.spectaculation.item.armor.TickingSet;
+import me.superischroma.spectaculation.listener.PlayerListener;
 import me.superischroma.spectaculation.region.Region;
 import me.superischroma.spectaculation.user.*;
 import me.superischroma.spectaculation.util.Groups;
-import me.superischroma.spectaculation.util.SLog;
-import me.superischroma.spectaculation.util.SUtil;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -59,14 +55,14 @@ public class MinerSet implements TickingSet
     {
         PlayerStatistics statistics = PlayerUtils.STATISTICS_CACHE.get(owner.getUniqueId());
         DoublePlayerStatistic defense = statistics.getDefense();
-        SpecItemListener.CombatAction action = SpecItemListener.getLastCombatAction(owner);
+        PlayerListener.CombatAction action = PlayerListener.getLastCombatAction(owner);
         counters.get(0).incrementAndGet();
         if ((action == null || (action.getTimeStamp() + 8000 <= System.currentTimeMillis() && helmet != null && chestplate != null && leggings != null && boots != null)) && counters.get(0).get() >= 2)
         {
             owner.setHealth(Math.min(owner.getMaxHealth(), owner.getHealth() + (owner.getMaxHealth() * 0.05)));
             counters.get(0).set(0);
         }
-        Region region = Region.getAreaOfEntity(owner);
+        Region region = Region.getRegionOfEntity(owner);
         if (region == null) return;
         if (!Groups.DEEP_CAVERNS_REGIONS.contains(region.getType())) return;
         if (helmet != null)

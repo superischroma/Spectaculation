@@ -4,28 +4,30 @@ import lombok.Getter;
 import me.superischroma.spectaculation.enchantment.Enchantment;
 import me.superischroma.spectaculation.enchantment.EnchantmentType;
 import me.superischroma.spectaculation.item.armor.LeatherArmorStatistics;
+import me.superischroma.spectaculation.potion.PotionColor;
 import me.superischroma.spectaculation.potion.PotionEffect;
 import me.superischroma.spectaculation.potion.PotionEffectType;
 import me.superischroma.spectaculation.reforge.Reforge;
 import me.superischroma.spectaculation.reforge.ReforgeType;
-import me.superischroma.spectaculation.util.SLog;
 import me.superischroma.spectaculation.util.SUtil;
+import me.superischroma.spectaculation.util.SerialNBTTagCompound;
 import net.minecraft.server.v1_8_R3.Item;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.*;
 
 @Getter
-public class SItem implements Cloneable
+public class SItem implements Cloneable, ConfigurationSerializable
 {
     private static final List<String> GLOBAL_NBT_TAGS = Arrays.asList("type", "rarity", "origin", "recombobulated");
+    private static final List<String> GLOBAL_DATA_KEYS = Arrays.asList("type", "variant", "stack", "rarity", "origin", "recombobulated");
 
     private final SMaterial type;
     private final short variant;
@@ -178,9 +180,8 @@ public class SItem implements Cloneable
             return false;
         List<PotionEffect> effects = getPotionEffects();
         boolean removeIf = effects.removeIf(e -> e.getType().equals(type));
-        PotionMeta meta = (PotionMeta) stack.getItemMeta();
-        meta.removeCustomEffect(type.getColor());
-        stack.setItemMeta(meta);
+        PotionColor top = SUtil.getTopColor(this);
+        stack.setDurability(top != null ? (isSplashPotion() ? top.getSplashData() : top.getData()) : (short) 0);
         NBTTagCompound es = data.getCompound("effects");
         for (PotionEffect e : effects)
             es.set(e.getType().getNamespace(), e.toCompound());
@@ -226,6 +227,11 @@ public class SItem implements Cloneable
     public boolean isPotion()
     {
         return type == SMaterial.WATER_BOTTLE;
+    }
+
+    public boolean isSplashPotion()
+    {
+        return isPotion() && data.getBoolean("splash");
     }
 
     public void setAnvilUses(int anvilUses)
@@ -402,7 +408,7 @@ public class SItem implements Cloneable
     {
         net.minecraft.server.v1_8_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(this.stack);
         if (nmsStack == null)
-            SLog.info(stack);
+            return;
         NBTTagCompound compound = nmsStack.getTag() != null ? nmsStack.getTag() : new NBTTagCompound();
         compound.remove("type");
         compound.remove("variant");
@@ -443,15 +449,8 @@ public class SItem implements Cloneable
             meta.setDisplayName(this.rarity.getColor() + type.getDisplayName(variant));
         else
             meta.setDisplayName(this.rarity.getColor() + reforge.getName() + " " + type.getDisplayName(variant));
-        if (isPotion())
-        {
-            for (PotionEffect effect : getPotionEffects())
-            {
-                PotionEffectType type = effect.getType();
-                PotionMeta potionMeta = (PotionMeta) stack.getItemMeta();
-                potionMeta.addCustomEffect(type.getColor().createEffect((int) effect.getDuration(), effect.getLevel() - 1), true);
-            }
-        }
+        if (isPotion() && getPotionEffects().size() > 0)
+            stack.setDurability(isSplashPotion() ? SUtil.getTopColor(this).getSplashData() : SUtil.getTopColor(this).getData());
         if (!(statistics instanceof LoreableMaterialStatistics))
             meta.setLore(lore.asBukkitLore());
         else
@@ -540,6 +539,14 @@ public class SItem implements Cloneable
         return new SItem(type, variant, stack.clone(), rarity, origin, recombobulated, data, true);
     }
 
+    public boolean equals(Object o)
+    {
+        if (!(o instanceof SItem)) return false;
+        SItem item = (SItem) o;
+        return type == item.type && variant == item.variant && stack.equals(item.stack) && rarity == item.rarity && origin == item.origin &&
+                recombobulated == item.recombobulated && data.equals(item.data);
+    }
+
     public NBTTagCompound toCompound()
     {
         NBTTagCompound compound = new NBTTagCompound();
@@ -561,6 +568,70 @@ public class SItem implements Cloneable
         if (!this.getType().getStatistics().isStackable() && !compound.hasKey("uuid"))
             compound.setString("uuid", UUID.randomUUID().toString());
         return compound;
+    }
+
+    @Override
+    public Map<String, Object> serialize()
+    {
+        Map<String, Object> map = new HashMap<>();
+        map.put("type", type.name());
+        map.put("variant", variant);
+        map.put("amount", stack.getAmount());
+        map.put("rarity", rarity.name());
+        map.put("origin", origin.name());
+        map.put("recombobulated", recombobulated);
+        for (String k : data.c())
+        {
+            if (k.equals("display"))
+                continue;
+            if (data.get(k) instanceof NBTTagCompound)
+            {
+                SerialNBTTagCompound serial = new SerialNBTTagCompound(data.getCompound(k));
+                for (Map.Entry<String, Object> entry : serial.serialize().entrySet())
+                    map.put(k + "." + entry.getKey(), entry.getValue());
+                continue;
+            }
+            map.put(k, SUtil.getObjectFromCompound(data, k));
+        }
+        return map;
+    }
+
+    public static SItem deserialize(Map<String, Object> map)
+    {
+        NBTTagCompound data = new NBTTagCompound();
+        for (Map.Entry<String, Object> entry : map.entrySet())
+        {
+            if (GLOBAL_DATA_KEYS.contains(entry.getKey()))
+                continue;
+            String key = entry.getKey();
+            String[] dir = entry.getKey().split("\\.");
+            if (dir.length >= 2)
+            {
+                key = dir[dir.length - 1];
+                NBTTagCompound track = data;
+                for (int i = 0; i < dir.length - 1; i++)
+                {
+                    if (!track.hasKey(dir[i]))
+                        track.set(dir[i], new NBTTagCompound());
+                    track = track.getCompound(dir[i]);
+                }
+                track.set(key, SUtil.getBaseFromObject(entry.getValue()));
+                continue;
+            }
+            data.set(key, SUtil.getBaseFromObject(entry.getValue()));
+        }
+        SMaterial material = SMaterial.getMaterial((String) map.get("type"));
+        short variant = ((Integer) map.get("variant")).shortValue();
+        return new SItem(material, variant, new ItemStack(material.getCraftMaterial(), (int) map.get("amount"), variant),
+                Rarity.getRarity((String) map.get("rarity")), ItemOrigin.valueOf((String) map.get("origin")), (boolean) map.get("recombobulated"),
+                data, true);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "SItem{type=" + type.name() + ", variant=" + variant + ", stack=" + stack.toString() + ", rarity=" + rarity.name() + ", origin=" +
+                origin.name() + ", recombobulated=" + recombobulated + ", data=" + data.toString() + "}";
     }
 
     public static SItem find(ItemStack stack)
