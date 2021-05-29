@@ -152,7 +152,7 @@ public abstract class Skill
             builder.append(ChatColor.GREEN).append(ChatColor.BOLD).append("  REWARDS");
             for (String line : getRewardLore(level, prevLevel, true))
                 builder.append("\n   ").append(line);
-            builder.append(ChatColor.DARK_AQUA).append(ChatColor.BOLD).append("------------------------------------------");
+            builder.append("\n").append(ChatColor.DARK_AQUA).append(ChatColor.BOLD).append("------------------------------------------");
             user.send(builder.toString());
             user.addCoins(getCoinReward(level));
         }
